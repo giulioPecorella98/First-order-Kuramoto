@@ -60,12 +60,13 @@ int main() {
 
     // Start gnuplot and plot the solution
     FILE* gp = startGnuplot(maxDensity);
-    if (!gp) { return 1; } 
+    if (gp) { 
     double currentTime = 0.0;
-    for (Grid f : solution) {
-        printSolution(f, currentTime, gp, p.thetaPoints, p.dTheta);
-        currentTime += p.frameInterval;
-        std::this_thread::sleep_for(std::chrono::seconds(static_cast<int>(p.frameInterval)));
+        for (Grid f : solution) {
+            printSolution(f, currentTime, gp, p.thetaPoints, p.dTheta);
+            currentTime += p.frameInterval;
+            std::this_thread::sleep_for(std::chrono::seconds(static_cast<int>(p.frameInterval)));
+        }
     }
 
     saveSolution(solution);    // Option to save the solution in a binary file for future data analysis
