@@ -33,9 +33,46 @@ The simulation produces the solution of the PDE that can be used to analyze:
 
 ---
 
-## Usage
+##  How to build and run
 
-(coming soon or you can add your compile/run instructions here)
+###  Requirements
+
+- C++ compiler (e.g. `g++`, `clang++`, MSVC)
+- CMake (>= 3.10)
+
+---
+
+###  Build
+
+Clone the repository:
+
+```bash
+git clone https://github.com/giulioPecorella98/First-order-Kuramoto-1.git
+```
+
+Create a build directory:
+
+```bash
+cd First-order-Kuramoto-1
+mkdir build
+cd build
+```
+
+Configure and build:
+```bash
+cmake ..
+cmake --build .
+```
+Run
+
+```bash
+./kuramoto.exe
+
+P.S. On Windows, you may need to specify a generator (e.g. MinGW or Visual Studio):
+```bash
+cmake .. -G "MinGW Makefiles"
+```
+
 
 ---
 
