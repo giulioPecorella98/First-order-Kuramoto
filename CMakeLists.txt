@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.10)
 
-project(first_order_Kuramoto_identical_oscillators)
+project(First-order-Kuramoto-1)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
