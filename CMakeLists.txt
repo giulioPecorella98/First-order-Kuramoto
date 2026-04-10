@@ -19,7 +19,7 @@ set(SOURCES
     src/plot/plot.cpp
 )
 
-add_executable(kuramoto.exe ${SOURCES})
+add_executable(kuramoto ${SOURCES})
 
 # link math library (-lm)
 target_link_libraries(kuramoto.exe m)
