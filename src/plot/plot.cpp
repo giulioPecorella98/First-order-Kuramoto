@@ -16,7 +16,7 @@ void printSolution(const Grid& f, double currentTime, FILE* gp, int thetaPoints,
 FILE* startGnuplot(double maxDensity) {
     FILE* gp = popen("gnuplot", "w");
     if(!gp){
-        std::cerr << "Error opening gnuplot pipe\n";
+        std::cerr << "Gnuplot not available\n";
         return nullptr;
     }
     fprintf(gp, "set xrange [0:%f]\n", 2 * PI);
