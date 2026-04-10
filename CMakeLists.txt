@@ -4,6 +4,7 @@ project(First-order-Kuramoto-1)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR})
 
 # Flags 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0 -g")
@@ -22,4 +23,4 @@ set(SOURCES
 add_executable(kuramoto ${SOURCES})
 
 # link math library (-lm)
-target_link_libraries(kuramoto.exe m)
+target_link_libraries(kuramoto m)
