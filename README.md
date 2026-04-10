@@ -51,19 +51,21 @@ Clone the repository:
 git clone https://github.com/giulioPecorella98/First-order-Kuramoto-1.git
 ```
 
+Set building directories:
+
 ```bash
 cd First-order-Kuramoto-1
 mkdir build
 cd build
 ```
 
-On linux:
+On Linux systems:
 ```bash
 cmake ..
 cmake --build .
 ```
 
-On Windows, you may need to specify a generator (e.g. MinGW or Visual Studio):
+On Windows, you need to specify a generator (e.g. MinGW):
 
 ```bash
 cmake -G "MinGW Makefiles" ..
