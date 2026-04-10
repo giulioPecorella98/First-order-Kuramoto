@@ -72,7 +72,7 @@ int main() {
     std::cout << "Hope you enjoyed, bye!" << std::endl;
     std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); 
     std::cin.get();
-    _pclose(gp);
+    pclose(gp);
 
     return 0;
 }
