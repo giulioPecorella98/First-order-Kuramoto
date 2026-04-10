@@ -50,30 +50,32 @@ Clone the repository:
 git clone https://github.com/giulioPecorella98/First-order-Kuramoto-1.git
 ```
 
-Create a build directory:
-
 ```bash
 cd First-order-Kuramoto-1
 mkdir build
 cd build
 ```
 
-Configure and build:
+On linux:
 ```bash
 cmake ..
 cmake --build .
 ```
+
+On Windows, you may need to specify a generator (e.g. MinGW or Visual Studio):
+
+```bash
+cmake -G "MinGW Makefiles" ..
+cmake --build .
+```
+
+
 Run
 
 ```bash
 ./kuramoto.exe
 ```
 
-P.S. On Windows, you may need to specify a generator (e.g. MinGW or Visual Studio):
-
-```bash
-cmake .. -G "MinGW Makefiles"
-```
 
 
 ---
