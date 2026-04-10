@@ -76,7 +76,7 @@ cmake --build .
 Run
 
 ```bash
-./kuramoto.exe
+./kuramoto
 ```
 
 
