@@ -39,6 +39,7 @@ The simulation produces the solution of the PDE that can be used to analyze:
 
 - C++ compiler (e.g. `g++`, `clang++`, MSVC)
 - CMake (>= 3.10)
+- Gnuplot (optional, required for graphic representation)
 
 ---
 
