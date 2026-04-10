@@ -67,6 +67,7 @@ Run
 
 ```bash
 ./kuramoto.exe
+```
 
 P.S. On Windows, you may need to specify a generator (e.g. MinGW or Visual Studio):
 
