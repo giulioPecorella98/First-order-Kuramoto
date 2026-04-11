@@ -14,11 +14,22 @@ void printSolution(const Grid& f, double currentTime, FILE* gp, int thetaPoints,
 }
 
 FILE* startGnuplot(double maxDensity) {
+    #ifdef _WIN32  
+    // Windows version
+    if (system("gnuplot --version >nul 2>&1") != 0) {
+        std::cerr << "Gnuplot not available!\n";
+        return nullptr;
+    }
+    FILE* gp = _popen("gnuplot", "w");
+    #else
+    // Linux/macOS version
     if (system("which gnuplot > /dev/null 2>&1") != 0) {
-        std::cerr << "Gnuplot not available! \n";
+        std::cerr << "Gnuplot not available!\n";
         return nullptr;
     }
     FILE* gp = popen("gnuplot", "w");
+    #endif
+    
     if(!gp){
         std::cerr << "Error opening gnuplot! \n";
         return nullptr;

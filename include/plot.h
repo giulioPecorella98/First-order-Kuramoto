@@ -1,4 +1,6 @@
 #pragma once
+#include <cstdio>  
+#include <cstdlib>
 #include <vector>
 #include <iostream>
 using Grid = std::vector<double>;
