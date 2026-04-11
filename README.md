@@ -9,6 +9,8 @@ This project is a numerical simulator for the first order, mean field Kuramoto P
 
 The equation describes the evolution of the density function,  with:
 
+- θ : phase variable
+- t : time variable
 - D : noise coefficient  
 - K : coupling strength  
 - Ω : natural frequency  
