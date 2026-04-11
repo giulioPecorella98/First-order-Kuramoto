@@ -1,6 +1,6 @@
 #include "save.h"
 
-void saveSolution(const std::vector<Grid>& solution) {
+void saveSolution(const std::vector<Grid>& solution, int thetaPoints, size_t tPoints) {
     std::cout << "Do you wish to save the result? (y or n)" << std::endl;
     char saveChoice;
     std::cin >> saveChoice;
@@ -20,6 +20,8 @@ void saveSolution(const std::vector<Grid>& solution) {
             std::cerr << "Error opening file for writing." << std::endl;
             return;
         }
+        fwrite(&thetaPoints, sizeof(int), 1, file);
+	fwrite(&tPoints, sizeof(size_t), 1, file);
         for (const auto& f : solution) {
             fwrite(f.data(), sizeof(double), f.size(), file);
         }

@@ -68,8 +68,9 @@ int main() {
             std::this_thread::sleep_for(std::chrono::seconds(static_cast<int>(p.frameInterval)));
         }
     }
-
-    saveSolution(solution);    // Option to save the solution in a binary file for future data analysis
+	
+    size_t tPoints = solution.size();
+    saveSolution(solution, p.thetaPoints, tPoints);    // Option to save the solution in a binary file for data analysis
     std::cout << "Hope you enjoyed, bye!" << std::endl;
     std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); 
     std::cin.get();
