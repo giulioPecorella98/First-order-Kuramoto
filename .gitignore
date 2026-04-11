@@ -17,6 +17,7 @@ compile_commands.json
 # =========================
 # Binaries / executables
 # =========================
+kuramoto
 *.exe
 *.out
 *.app
