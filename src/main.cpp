@@ -9,15 +9,12 @@
 
 int main() {
 
-    std::cout << "===============================================================================" << std::endl;
-    std::cout << "|       Welcome to the first order mean field Kuramoto model simulator!       |" << std::endl;
-    std::cout << "===============================================================================" << std::endl;
-    std::cout << " Here you have the opportunity to simulate the dynamics of the first order " << std::endl;
-    std::cout << " Kuramoto model for identical oscillators " << std::endl;
-    std::cout << " \n d/dt rho(theta,t) = D * d^2/dtheta^2 rho(theta,t) - d/dtheta [rho(theta,t) *" << std::endl;
-    std::cout << " (omega + K * int_0^{2pi} sin(theta' - theta) * rho(theta',t) dtheta')],\n" << std::endl;
-    std::cout << " choosing the initial distribution of the oscillators, the noise level D," << std::endl;
-    std::cout << " the coupling constant K and the natural frequency omega. " << std::endl;
+    std::cout << "===================================================================================" << std::endl;
+    std::cout << "|         Welcome to the first order mean field Kuramoto model simulator!         |" << std::endl;
+    std::cout << "===================================================================================" << std::endl;
+    std::cout << " Here you have the opportunity to simulate the dynamics of the first order Kuramoto" << std::endl;
+    std::cout << " model for identical oscillators, choosing the initial distribution of the " << std::endl;
+    std::cout << " oscillators, the noise level D, the coupling constant K and the natural frequency omega. " << std::endl;
     std::cout << "-------------------------------------------------------------------" << std::endl;
     
     // Load parameters
