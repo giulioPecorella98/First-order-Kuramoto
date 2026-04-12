@@ -1,4 +1,5 @@
 import subprocess
+import os
 from plot import plotting
 
 def main():
@@ -17,8 +18,10 @@ def main():
     userInput = input("Please type your choice: ")
     while(userInput != "3"):
 
-        if userInput == "1":
-            subprocess.run(["C:/Users/39340/projects/Kuramoto/First-order-Kuramoto-1/simulation_engine/kuramoto.exe"])
+        if userInput == "1":    
+            project_root = os.path.dirname(os.path.abspath(__file__))
+            exe_path = os.path.join(project_root, "simulation_engine", "kuramoto")
+            subprocess.run([exe_path])
         
         elif userInput == "2":
             plotting.DataAnalysis()
