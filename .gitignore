@@ -6,6 +6,9 @@ cmake-build-*/
 out/
 Debug/
 Release/
+__pycache__/
+*.py[cod]
+*$py.class
 
 # CMake generated files
 CMakeCache.txt

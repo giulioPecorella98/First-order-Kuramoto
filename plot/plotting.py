@@ -1,0 +1,47 @@
+import numpy as np
+import matplotlib.pyplot as plt
+from pathlib import Path
+import os
+
+def DataAnalysis():
+    simulation =  input("Which simulation do you wish to load? ")
+    continueAnalysis = True
+    while continueAnalysis:
+        try:
+            with open(Path("saved_data") / simulation, "rb") as f:
+                thetaPonts = np.fromfile(f, dtype=np.int32, count=1)[0]
+                timePoints = np.fromfile(f, dtype=np.int64, count=1)[0]
+                finalTime = np.fromfile(f, dtype=np.float64, count=1)[0]
+                density = np.fromfile(f, dtype=np.float64)
+                continueAnalysis = False
+        except FileNotFoundError:
+            print(f"File '{simulation}' not found in 'saved_data' directory.")
+            print(f"The available simulations are: {', '.join(os.listdir(Path('saved_data')))}")
+            simulation =  input("Please give a valid simulation name: ")
+
+    expected_size = thetaPonts * timePoints
+    if density.size != expected_size:
+        raise ValueError(f"Solution vector has wrong dimension: expected {expected_size}, got {density.size}")
+
+    f = density.reshape((timePoints, thetaPonts))
+    theta = np.linspace(0, 2 * np.pi, thetaPonts, endpoint=True)
+    dt = finalTime / timePoints
+
+    plt.figure()
+    time = 0
+    ymax = np.max(f) * 1.5
+    for t in range(timePoints):
+        plt.clf()
+        time += dt 
+        plt.plot(theta, f[t, :])
+        plt.title(f"Density at time t = {time:.2f}")
+        plt.xlim(0, 2 * np.pi)
+        plt.xlabel(r"$\theta$")
+        plt.ylim(0, ymax)
+        plt.ylabel(r"$\rho (\theta,t)$")
+        if t == 0:
+            plt.pause(2 - dt) 
+        plt.pause(dt) 
+
+    input("Press Enter to close the plot...")
+    plt.close()

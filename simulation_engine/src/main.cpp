@@ -1,6 +1,5 @@
 #include "finite_difference.h"
 #include "initial_conditions.h"
-#include "plot.h"
 #include "parameters.h"
 #include "save.h"
 #include <thread>
@@ -9,14 +8,14 @@
 
 int main() {
 
-    std::cout << "=======================================================================================" << std::endl;
+   /* std::cout << "=======================================================================================" << std::endl;
     std::cout << "|           Welcome to the first order mean field Kuramoto model simulator!           |" << std::endl;
     std::cout << "=======================================================================================" << std::endl;
     std::cout << " Here you have the opportunity to simulate the dynamics of the first order Kuramoto" << std::endl;
     std::cout << " model for identical oscillators, choosing the initial distribution of the oscillators," << std::endl;
     std::cout << " the noise level D, the coupling constant K and the natural frequency omega. " << std::endl;
     std::cout << "-------------------------------------------------------------------" << std::endl;
-    
+    */
     // Load parameters
     Parameters p = loadParameters();
 
@@ -54,24 +53,9 @@ int main() {
     }
     std::cout << "\rComputing: [" << std::string(100, '=') << "] 100%" << std::endl;
     std::cout << "Simulation completed successfully." << std::endl;
-
-    // Start gnuplot and plot the solution
-    FILE* gp = startGnuplot(maxDensity);
-    if (gp) { 
-    double currentTime = 0.0;
-        for (Grid f : solution) {
-            printSolution(f, currentTime, gp, p.thetaPoints, p.dTheta);
-            currentTime += p.frameInterval;
-            std::this_thread::sleep_for(std::chrono::seconds(static_cast<int>(p.frameInterval)));
-        }
-    }
 	
     size_t tPoints = solution.size();
-    saveSolution(solution, p.thetaPoints, tPoints);    // Option to save the solution in a binary file for data analysis
-    std::cout << "Hope you enjoyed, bye!" << std::endl;
-    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); 
-    std::cin.get();
-    pclose(gp);
+    saveSolution(solution, p.thetaPoints, tPoints, p.T);    // Option to save the solution in a binary file for data analysis
 
     return 0;
 }
