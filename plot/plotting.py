@@ -9,7 +9,7 @@ def DataAnalysis():
     while continueAnalysis:
         try:
             with open(Path("saved_data") / simulation, "rb") as f:
-                thetaPonts = np.fromfile(f, dtype=np.int32, count=1)[0]
+                thetaPoints = np.fromfile(f, dtype=np.int32, count=1)[0]
                 timePoints = np.fromfile(f, dtype=np.int64, count=1)[0]
                 finalTime = np.fromfile(f, dtype=np.float64, count=1)[0]
                 density = np.fromfile(f, dtype=np.float64)
@@ -19,12 +19,12 @@ def DataAnalysis():
             print(f"The available simulations are: {', '.join(os.listdir(Path('saved_data')))}")
             simulation =  input("Please give a valid simulation name: ")
 
-    expected_size = thetaPonts * timePoints
+    expected_size = thetaPoints * timePoints
     if density.size != expected_size:
         raise ValueError(f"Solution vector has wrong dimension: expected {expected_size}, got {density.size}")
 
-    f = density.reshape((timePoints, thetaPonts))
-    theta = np.linspace(0, 2 * np.pi, thetaPonts, endpoint=True)
+    f = density.reshape((timePoints, thetaPoints))
+    theta = np.linspace(0, 2 * np.pi, thetaPoints, endpoint=True)
     dt = finalTime / timePoints
 
     plt.figure()
