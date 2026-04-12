@@ -11,9 +11,9 @@ The equation describes the evolution of the density function,  with:
 
 - θ : phase variable
 - t : time variable
-- D : noise coefficient  
-- K : coupling strength  
+- D : noise coefficient
 - Ω : natural frequency  
+- K : coupling strength  
 
 ---
 ##  Description
@@ -22,16 +22,16 @@ The simulator allows the user to:
 - configure system parameters (initial conditions, coupling, noise, etc.)
 - run numerical simulations of the Kuramoto dynamics
 - save simulation results for post processing and visualization
-
+- data visualization of the results
 ---
 
 
-## Output
+## Data visualization
 
-The simulation produces the solution of the PDE that can be used to analyze:
+The simulation produces the solution of the PDE that can be used to visualize:
 - synchronization dynamics
-- order parameter evolution
-- phase distributions
+- order parameter evolution (to be implemented soon)
+- phase distributions (to be implemented soon)
 
 ---
 
@@ -41,7 +41,7 @@ The simulation produces the solution of the PDE that can be used to analyze:
 
 - C++ compiler (e.g. `g++`, `clang++`, MSVC)
 - CMake (>= 3.10)
-- Gnuplot (optional, required for graphic representation)
+- Python >= 3.8 with numpy and matplotlib
 
 ---
 
@@ -78,7 +78,7 @@ cmake --build .
 Run
 
 ```bash
-./kuramoto
+./main.py
 ```
 
 
