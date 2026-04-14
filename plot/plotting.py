@@ -25,14 +25,13 @@ def DataAnalysis():
 
     f = density.reshape((timePoints, thetaPoints))
     theta = np.linspace(0, 2 * np.pi, thetaPoints, endpoint=True)
-    dt = finalTime / timePoints
+    dt = finalTime / (timePoints - 1)
 
     plt.figure()
     time = 0
     ymax = np.max(f) * 1.5
     for t in range(timePoints):
         plt.clf()
-        time += dt 
         plt.plot(theta, f[t, :])
         plt.title(f"Density at time t = {time:.2f}")
         plt.xlim(0, 2 * np.pi)
@@ -42,6 +41,7 @@ def DataAnalysis():
         if t == 0:
             plt.pause(2 - dt) 
         plt.pause(dt) 
+        time += dt 
 
     input("Press Enter to close the plot...")
     plt.close()

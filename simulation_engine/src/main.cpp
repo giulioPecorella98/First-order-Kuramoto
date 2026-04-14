@@ -7,15 +7,6 @@
 
 
 int main() {
-
-   /* std::cout << "=======================================================================================" << std::endl;
-    std::cout << "|           Welcome to the first order mean field Kuramoto model simulator!           |" << std::endl;
-    std::cout << "=======================================================================================" << std::endl;
-    std::cout << " Here you have the opportunity to simulate the dynamics of the first order Kuramoto" << std::endl;
-    std::cout << " model for identical oscillators, choosing the initial distribution of the oscillators," << std::endl;
-    std::cout << " the noise level D, the coupling constant K and the natural frequency omega. " << std::endl;
-    std::cout << "-------------------------------------------------------------------" << std::endl;
-    */
     // Load parameters
     Parameters p = loadParameters();
 
@@ -26,7 +17,9 @@ int main() {
     // Apply the initial conditions and start the simulation
     initialConditions(f, p.thetaPoints, p.dTheta);
     std::vector<Grid> solution;      // Vector to store the solution at each frame
-    double nextFrameTime = 0.0;
+    solution.push_back(f);
+    double currentTime = 0.0;
+    double nextFrameTime = p.frameInterval;
     double maxDensity = *std::max_element(f.begin(), f.end());
     for (int t = 0; t < p.steps; ++t) {
         if (t % p.frameCount == 0) {
@@ -45,7 +38,7 @@ int main() {
             maxDensity = currentMaxDensity;
         }
         // Save the solution a the specified frame intervals
-        double currentTime = t * p.dt;
+        currentTime += p.dt;
         if ((currentTime >= nextFrameTime) || (t == p.steps - 1)) {
             solution.push_back(f); 
             nextFrameTime += p.frameInterval;

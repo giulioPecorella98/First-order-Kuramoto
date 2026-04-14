@@ -34,5 +34,7 @@ def main():
         print("3) Exit")
         userInput = input("Please type your choice: ")
 
+    print("Thank you for using the first order mean field Kuramoto model simulator! See you next time!")
+
 if __name__ == "__main__":
     main()

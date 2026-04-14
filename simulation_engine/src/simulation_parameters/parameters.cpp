@@ -68,8 +68,9 @@ Parameters loadParameters() {
     }
     int thetaPoints = static_cast<int>((2 * PI / dTheta) + 1) + 1;
     dTheta = 2 * PI / (thetaPoints - 1);
-    double dt = std::min(0.9 * (dTheta * dTheta) / (D + (K + omega) * dTheta + K * dTheta * dTheta), T / 100);  //Stability condition for the finite difference scheme
-    int steps = static_cast<int>(T / dt);
+    double dtMax = std::min(0.9 * (dTheta * dTheta) / (D + (K + omega) * dTheta + K * dTheta * dTheta), T / 100);  //Stability condition for the finite difference scheme
+    int steps = static_cast<int>(T / dtMax) + 1;
+    double dt = static_cast<double>(T) /  static_cast<double>(steps);
     double frameInterval = 1.0 / framePerSeconds;
     int frameCount = std::max(1, static_cast<int>(steps / 100.0));
     return {T, D, K, dTheta, dt, thetaPoints, steps, frameInterval, frameCount, omega};
