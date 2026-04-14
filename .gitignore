@@ -38,15 +38,13 @@ kuramoto
 *.dylib
 
 # =========================
-# Logs / runtime output (scientific sims)
+# Logs / runtime output 
 # =========================
 *.log
 *.dat
 *.csv
 *.txt~
-results/
-output/
-data/
+
 
 # =========================
 # IDE / editors
