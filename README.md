@@ -78,7 +78,7 @@ cmake --build .
 Run
 
 ```bash
-python3 main.py
+py main.py
 ```
 
 
