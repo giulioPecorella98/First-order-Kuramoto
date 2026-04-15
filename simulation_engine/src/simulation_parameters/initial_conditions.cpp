@@ -2,6 +2,7 @@
 #include "initial_conditions.h"
 
 void initialConditions(Grid& f, int thetaPoints, double dTheta) {
+    f = std::vector<double>(thetaPoints, 0.0);
     double PI = 3.14159265358979323846;
     std::cout << "Please choose one of the following initial conditions:\n";
     std::cout << "1. n-modal Gaussian\n";
@@ -59,11 +60,8 @@ void initialConditions(Grid& f, int thetaPoints, double dTheta) {
                     if (diff > PI) {diff -= 2*PI;}
                     else if (diff < -PI) {diff += 2*PI;}
                     f[i] += amplitude * std::exp(-diff * diff / (2 * variance));
+                    sum += f[i];
                 }
-            }
-            for (int i = 0; i < thetaPoints; i++) { sum += f[i]; }
-            for (int i = 0; i < thetaPoints; i++) {
-                f[i] /= (sum * dTheta);
             }
             break;
         case 2:

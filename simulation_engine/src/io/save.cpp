@@ -14,7 +14,7 @@ void saveSolution(const std::vector<Grid>& solution, int thetaPoints, size_t tPo
         std::cout << "Enter the name of the file (without extension) where you want to save the result: ";
         std::string filename;
         std::cin >> filename;
-        std::filesystem::path fullpath = std::filesystem::path(PROJECT_ROOT) / "saved_data" / (filename + ".bin");
+        std::filesystem::path fullpath = std::filesystem::path(PROJECT_ROOT) / "saved_data" / (filename);
         FILE* file = fopen(fullpath.string().c_str(), "wb");
         if (!file) {
             std::cerr << "Error: file not saved. "<< std::endl;

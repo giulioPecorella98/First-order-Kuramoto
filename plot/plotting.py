@@ -27,6 +27,7 @@ def DataAnalysis():
     theta = np.linspace(0, 2 * np.pi, thetaPoints, endpoint=True)
     dt = finalTime / (timePoints - 1)
 
+    print("Plotting the evolution of the density...")
     plt.figure()
     time = 0
     ymax = np.max(f) * 1.5
@@ -43,5 +44,15 @@ def DataAnalysis():
         plt.pause(dt) 
         time += dt 
 
+
+    print("Plotting the order parameter...")
+    r = np.abs(np.sum(f * np.exp(1j * theta), axis=1)) *  2 * np.pi / (thetaPoints - 1)
+    plt.figure()
+    plt.plot(np.linspace(0, finalTime, timePoints), r)
+    plt.title(f"Order parameter over time")
+    plt.xlim(0, finalTime)
+    plt.ylim(0, 1.1)
+    plt.show(block=False)
+
     input("Press Enter to close the plot...")
-    plt.close()
+    plt.close('all')

@@ -66,7 +66,7 @@ Parameters loadParameters() {
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
         std::cin >> framePerSeconds;
     }
-    int thetaPoints = static_cast<int>((2 * PI / dTheta) + 1) + 1;
+    int thetaPoints = static_cast<int>((2 * PI / dTheta) + 1);
     dTheta = 2 * PI / (thetaPoints - 1);
     double dtMax = std::min(0.9 * (dTheta * dTheta) / (D + (K + omega) * dTheta + K * dTheta * dTheta), T / 100);  //Stability condition for the finite difference scheme
     int steps = static_cast<int>(T / dtMax) + 1;
