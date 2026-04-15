@@ -2,4 +2,6 @@
 #include "initial_conditions.h"
 #include <filesystem>
 
-void saveSolution(const std::vector<Grid>& solution, int thetaPoints, size_t tPoints, double T);
+void saveSolution(const std::vector<Grid>& solution, Frequency& g, 
+                  int thetaPoints, int omegaPoints, int tPoints, 
+                  double minimumFrequency, double maximumFrequency, double T);

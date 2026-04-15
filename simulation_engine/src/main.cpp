@@ -6,21 +6,22 @@
 #include <algorithm>
 
 
+
 int main() {
     // Load parameters
     Parameters p = loadParameters();
 
     // Allocate vectors for the finite difference scheme
-    Grid f(p.thetaPoints);        // Solution
-    Grid fnew(p.thetaPoints);     // Auxiliary vector
+    Grid f(p.thetaPoints, std::vector<double>(p.omegaPoints));         // Solution
+    Grid fnew(p.thetaPoints,  std::vector<double>(p.omegaPoints));     // Auxiliary vector
+    Frequency g(p.omegaPoints);                                        // Vector of natural frequencies
 
     // Apply the initial conditions and start the simulation
-    initialConditions(f, p.thetaPoints, p.dTheta);
+    initialConditions(f, g, p.thetaPoints, p.dTheta, p.omegaPoints, p.dOmega, p.minimumFrequecy, p.maximumFrequecy);
     std::vector<Grid> solution;      // Vector to store the solution at each frame
     solution.push_back(f);
     double currentTime = 0.0;
     double nextFrameTime = p.frameInterval;
-    double maxDensity = *std::max_element(f.begin(), f.end());
     for (int t = 0; t < p.steps; ++t) {
         if (t % p.frameCount == 0) {
             int progress = static_cast<int>((static_cast<double>(t) / p.steps) * 100);
@@ -28,15 +29,9 @@ int main() {
             bar.append(100 - progress, ' ');
             std::cout << "\rComputing: [" << bar << "] " << progress << "%" << std::flush;
         }
-
         // Compute the solution at each time step
-        finiteDifference(f, fnew, p.thetaPoints, p.dTheta, p.D, p.dt, p.K, p.omega);
+        finiteDifference(f, fnew, g, p.thetaPoints, p.dTheta, p.omegaPoints, p.dOmega, p.minimumFrequecy, p.maximumFrequecy, p.dt, p.D, p.K);
         std::swap(f, fnew); 
-        // Update the maximum of the density for plotting purposes
-        double currentMaxDensity = *std::max_element(f.begin(), f.end());
-        if (currentMaxDensity > maxDensity) {
-            maxDensity = currentMaxDensity;
-        }
         // Save the solution a the specified frame intervals
         currentTime += p.dt;
         if ((currentTime >= nextFrameTime) || (t == p.steps - 1)) {
@@ -47,8 +42,8 @@ int main() {
     std::cout << "\rComputing: [" << std::string(100, '=') << "] 100%" << std::endl;
     std::cout << "Simulation completed successfully." << std::endl;
 	
-    size_t tPoints = solution.size();
-    saveSolution(solution, p.thetaPoints, tPoints, p.T);    // Option to save the solution in a binary file for data analysis
+    int tPoints = static_cast<int>(solution.size());
+    saveSolution(solution, g, p.thetaPoints, p.omegaPoints, tPoints, p.minimumFrequecy, p.maximumFrequecy, p.T); 
 
     return 0;
 }

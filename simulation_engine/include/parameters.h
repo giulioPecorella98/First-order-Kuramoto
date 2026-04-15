@@ -5,12 +5,15 @@ struct Parameters {
     double D; 
     double K; 
     double dTheta;
-    double dt;
     int thetaPoints;
+    double minimumFrequecy;
+    double maximumFrequecy;
+    double dOmega;
+    int omegaPoints;
+    double dt;
     int steps;
     double frameInterval;
     int frameCount;
-    double omega;
 };
 
 Parameters loadParameters();

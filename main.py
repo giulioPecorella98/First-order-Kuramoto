@@ -7,8 +7,8 @@ def main():
     print("|            Welcome to the first order mean field Kuramoto model simulator!            |")
     print("=========================================================================================")
     print(" Here you have the opportunity to simulate the dynamics of the first order Kuramoto")
-    print(" model for identical oscillators, choosing the initial distribution of the oscillators,")
-    print(" the noise level D, the coupling constant K and the natural frequency omega.")
+    print(" model, choosing the initial distribution of the oscillators, the natural frequency")
+    print(" distribution, the noise level D, and the coupling constant K.")
     print("-------------------------------------------------------------------")
     print("\nWhat do you want to do?")
     print("1) Run a new simulation")
@@ -28,6 +28,7 @@ def main():
         
         else:
             print("Command not valid, please type again.")
+            
         print("\nWhat do you want to do now?")
         print("1) Run a new simulation")
         print("2) Load a saved simulation")

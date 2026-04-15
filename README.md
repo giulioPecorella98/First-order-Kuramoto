@@ -2,7 +2,7 @@
 
 This project is a numerical simulator for the first order, mean field Kuramoto PDE with identical oscillators
 
-![Kuramoto PDE](docs/equation.png)
+![Kuramoto PDE](docs/eq.png)
 
 ---
 ## Model
@@ -13,6 +13,7 @@ The equation describes the evolution of the density function,  with:
 - t : time variable
 - D : noise coefficient
 - Ω : natural frequency  
+- g(Ω) : natural frequency distribution
 - K : coupling strength  
 
 ---
@@ -29,9 +30,10 @@ The simulator allows the user to:
 ## Data visualization
 
 The simulation produces the solution of the PDE that can be used to visualize:
-- synchronization dynamics
-- order parameter evolution (to be implemented soon)
-- phase distributions (to be implemented soon)
+- density evolution
+- order parameter evolution 
+
+![order parameter](docs/eq_r.png)
 
 ---
 
