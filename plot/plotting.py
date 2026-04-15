@@ -14,10 +14,10 @@ def DataAnalysis():
                 finalTime = np.fromfile(f, dtype=np.float64, count=1)[0]
                 density = np.fromfile(f, dtype=np.float64)
                 continueAnalysis = False
-        except FileNotFoundError:
-            print(f"File '{simulation}' not found in 'saved_data' directory.")
+        except Exception as e:
+            print(f"An error occurred while reading the file: {e}")
             print(f"The available simulations are: {', '.join(os.listdir(Path('saved_data')))}")
-            simulation =  input("Please give a valid simulation name: ")
+            simulation = input("Try another file name: ")
 
     expected_size = thetaPoints * timePoints
     if density.size != expected_size:
@@ -43,7 +43,6 @@ def DataAnalysis():
             plt.pause(2 - dt) 
         plt.pause(dt) 
         time += dt 
-
 
     print("Plotting the order parameter...")
     r = np.abs(np.sum(f * np.exp(1j * theta), axis=1)) *  2 * np.pi / (thetaPoints - 1)
