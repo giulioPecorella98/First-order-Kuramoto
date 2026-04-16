@@ -1,6 +1,6 @@
 # First-order Kuramoto Model Simulator
 
-This project is a numerical simulator for the first order, mean field Kuramoto PDE with identical oscillators
+This project is a numerical simulator for the first order, mean field Kuramoto PDE 
 
 <p align="center">
   <img src="docs/eq.png" alt="Kuramoto PDE">
