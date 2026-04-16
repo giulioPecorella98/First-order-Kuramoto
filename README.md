@@ -3,7 +3,7 @@
 This project is a numerical simulator for the first order, mean field Kuramoto PDE with identical oscillators
 
 <p align="center">
-  <img src="docs/eq.png" alt="Kuramoto PDE" width="100%">
+  <img src="docs/eq.png" alt="Kuramoto PDE">
 </p>
 
 ---
@@ -33,9 +33,12 @@ The simulator allows the user to:
 
 The simulation produces the solution of the PDE that can be used to visualize:
 - density evolution
-- order parameter evolution 
+- evolution of the order parameter r(t) 
 
-![order parameter](docs/eq_r.png)
+<p align="center">
+  <img src="docs/eq_r.png">
+</p>
+
 
 ---
 
