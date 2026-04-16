@@ -2,7 +2,9 @@
 
 This project is a numerical simulator for the first order, mean field Kuramoto PDE with identical oscillators
 
-![Kuramoto PDE](docs/eq.png)
+<p align="center">
+  <img src="docs/eq.png" alt="Kuramoto PDE" width="100%">
+</p>
 
 ---
 ## Model
