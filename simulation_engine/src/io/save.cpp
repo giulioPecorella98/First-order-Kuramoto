@@ -1,6 +1,7 @@
 #include "save.h"
 
-void saveSolution(const std::vector<Grid>& solution, Frequency& g, int thetaPoints, int omegaPoints, int tPoints, double minimumFrequency, double maximumFrequency, double T) {
+void saveSolution(const std::vector<Grid>& solution, Frequency& g, std::vector<double>& ordPar, int thetaPoints, int omegaPoints, int tPoints, 
+                  double minimumFrequency, double maximumFrequency, double T, double D, double K) {
     
     std::cout << "Do you wish to save the result? (y or n)" << std::endl;
     char saveChoice;
@@ -30,6 +31,9 @@ void saveSolution(const std::vector<Grid>& solution, Frequency& g, int thetaPoin
         fwrite(&minimumFrequency, sizeof(double), 1, file);
         fwrite(&maximumFrequency, sizeof(double), 1, file);
         fwrite(&T, sizeof(double), 1, file);
+        fwrite(&D, sizeof(double), 1, file);
+        fwrite(&K, sizeof(double), 1, file);
+        fwrite(ordPar.data(), sizeof(double), ordPar.size(), file);
         fwrite(g.data(), sizeof(double), g.size(), file);        
         for (const auto& f : solution) {                               // time
             for (const auto& row : f) {                                // theta

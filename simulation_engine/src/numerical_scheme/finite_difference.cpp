@@ -1,6 +1,6 @@
 // Function for computing the solution to the mean field Kuramoto PDE with noise level D. 
-
 #include "finite_difference.h"
+#include "order_parameter.h"
 #include <cmath>
 
 void finiteDifference(const Grid& f, Grid& fnew, Frequency& g,
@@ -8,18 +8,7 @@ void finiteDifference(const Grid& f, Grid& fnew, Frequency& g,
                       int omegaPoints, double dOmega, double minimumFrequency, double maximumFrequecy, 
                       double dt, double D, double K) {
 
-    // Compute the order parameter R and the mean phase psi
-    double Rcos = 0.0, Rsin = 0.0;
-    for (int i = 0; i < thetaPoints; i++) {
-        double psi = i * dTheta;
-        for (int j = 0; j < omegaPoints; j++) {
-            Rcos += cos(psi) * f[i][j] * g[j];
-            Rsin += sin(psi) * f[i][j] * g[j];;
-        }
-    }
-    Rcos *= dTheta * dOmega;
-    Rsin *= dTheta * dOmega;
-
+    OrderParameter r =  computeR(f, g, thetaPoints, omegaPoints, dTheta, dOmega);                  
     for (int j = 0; j < omegaPoints; ++j) {
 
         double omega = minimumFrequency + j * dOmega;
@@ -27,8 +16,8 @@ void finiteDifference(const Grid& f, Grid& fnew, Frequency& g,
 
             double theta = i * dTheta;
             // Compute the convolution terms by employing the order parameter R and the mean phase psi.
-            double fConvSin = K * (Rsin * cos(theta) - Rcos * sin(theta)) + omega;
-            double fConvCos = K * (Rcos * cos(theta) + Rsin * sin(theta));
+            double fConvSin = K * (r.Rsin * cos(theta) - r.Rcos * sin(theta)) + omega;
+            double fConvCos = K * (r.Rcos * cos(theta) + r.Rsin * sin(theta));
             /* 
             Compute the solution by mixing finite difference for the diffusive term and upwind scheme 
             for the nonlinear drift, by taking care of the periodic boundary conditions.

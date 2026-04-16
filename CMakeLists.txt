@@ -15,6 +15,7 @@ set(SOURCES
     simulation_engine/src/numerical_scheme/finite_difference.cpp
     simulation_engine/src/simulation_parameters/initial_conditions.cpp
     simulation_engine/src/simulation_parameters/parameters.cpp
+    simulation_engine/src/numerical_scheme/order_parameter.cpp
 )
 
 add_executable(kuramoto ${SOURCES})
