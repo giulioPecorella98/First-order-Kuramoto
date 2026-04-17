@@ -5,10 +5,12 @@ import os
 from matplotlib.animation import FuncAnimation
 
 def DataAnalysis():
+
     simulation =  input("Which simulation do you wish to load? (type 's' to see available simulations) ")
     while simulation == 's':
         print(f"The available simulations are: {', '.join(os.listdir(Path('saved_data')))}")
         simulation = input("Which simulation do you wish to load? ")
+    
     continueAnalysis = True
     while continueAnalysis:
         try:
@@ -21,8 +23,8 @@ def DataAnalysis():
                 finalTime = np.fromfile(f, dtype = np.float64, count = 1)[0]
                 D = np.fromfile(f, dtype = np.float64, count = 1)[0]
                 K = np.fromfile(f, dtype = np.float64, count = 1)[0]
-                r = np.fromfile(f, dtype = np.float64, count=timePoints)
-                g = np.fromfile(f, dtype = np.float64, count=omegaPoints)
+                r = np.fromfile(f, dtype = np.float64, count = timePoints)
+                g = np.fromfile(f, dtype = np.float64, count = omegaPoints)
                 density = np.fromfile(f, dtype = np.float64)
                 continueAnalysis = False
         except Exception as e:
@@ -36,48 +38,41 @@ def DataAnalysis():
 
     f = density.reshape((timePoints, thetaPoints, omegaPoints))
     dt = finalTime / (timePoints - 1)
-    dTheta = 2 * np.pi / (thetaPoints - 1)
-    dOmega = (maximumFrequency - minimumFrequency) / (omegaPoints - 1)
 
     print("Plotting the evolution of the density...")
     vmax = np.max(f)
     fig, ax = plt.subplots()
     im = ax.imshow(f[0, :, :].T,
                extent=[0, 2*np.pi, minimumFrequency, maximumFrequency],
-               aspect='auto',
-               origin='lower')
+               aspect='auto', origin='lower')
     
     fig.colorbar(im, ax=ax)
     title = ax.set_title(r"Density $\rho(\theta, \Omega,$" + f"{0:.2f})")
     ax.set_xlabel(r"$\theta$")
     ax.set_ylabel(r"$\Omega$")
-    for t in range(timePoints - 1):
+    plt.pause(2)
+    for t in range(1, timePoints):
         im.set_data(f[t, :, :].T)
         title.set_text(r"Density $\rho(\theta, \Omega,$" + f"{t*dt:.2f})")
         plt.pause(dt)
+    plt.pause(2)
     plt.close(fig) 
 
-    theta = np.linspace(0, 2*np.pi, f.shape[1])
-    omega = np.linspace(minimumFrequency, maximumFrequency, f.shape[2])
+    theta = np.linspace(0, 2 * np.pi, thetaPoints)
+    omega = np.linspace(minimumFrequency, maximumFrequency, omegaPoints)
     Theta, Omega = np.meshgrid(theta, omega)
     fig0 = plt.figure()
     ax0 = fig0.add_subplot(111, projection='3d')
     ax0.set_box_aspect([1, 1, 0.7])
-    surf0 = ax0.plot_surface(
-        Theta, Omega, f[0, :, :].T,
-        cmap='viridis', vmin=0, vmax=vmax
-    )
-    ax0.set_title("Initial density (t = 0)")
+    ax0.plot_surface(Theta, Omega, f[0, :, :].T, cmap='viridis', vmin=0, vmax=vmax)
+    ax0.set_title("Initial density at t = 0")
     ax0.set_xlabel(r"$\theta$")
     ax0.set_ylabel(r"$\Omega$")
     ax0.set_zlabel(r"$\rho$")
     fig1 = plt.figure()
     ax1 = fig1.add_subplot(111, projection='3d')
     ax1.set_box_aspect([1, 1, 0.7])
-    surf1 = ax1.plot_surface(
-        Theta, Omega, f[-1, :, :].T,
-        cmap='viridis', vmin=0, vmax=vmax
-    )
+    ax1.plot_surface(Theta, Omega, f[-1, :, :].T, cmap='viridis', vmin=0, vmax=vmax)
     ax1.set_title(f"Final density at t = {finalTime:.2f}")
     ax1.set_xlabel(r"$\theta$")
     ax1.set_ylabel(r"$\Omega$")
@@ -91,12 +86,10 @@ def DataAnalysis():
     ax1.set_zlim(0, vmax)
 
     def on_scroll(event):
-        step = 5
         if event.button == 'up':
-            ax1.view_init(elev=30, azim=ax1.azim + step)
+            ax1.view_init(elev=30, azim=ax1.azim + 5)
         elif event.button == 'down':
-            ax1.view_init(elev=30, azim=ax1.azim - step)
-
+            ax1.view_init(elev=30, azim=ax1.azim - 5)
         fig1.canvas.draw_idle()
 
     fig1.canvas.mpl_connect('scroll_event', on_scroll)
