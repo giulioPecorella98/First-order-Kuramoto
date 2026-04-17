@@ -10,8 +10,8 @@ int main() {
     // Load parameters
     Parameters p = loadParameters();
 
-    Grid f(p.thetaPoints, std::vector<double>(p.omegaPoints));         // Solution vector
-    Grid fnew(p.thetaPoints,  std::vector<double>(p.omegaPoints));     // Auxiliary vector
+    Grid f(p.thetaPoints, std::vector<double>(p.omegaPoints, 0.0));         // Solution vector
+    Grid fnew(p.thetaPoints,  std::vector<double>(p.omegaPoints, 0.0));     // Auxiliary vector
     Frequency g(p.omegaPoints);                                        // Vector of natural frequencies
 
     // Apply the initial conditions

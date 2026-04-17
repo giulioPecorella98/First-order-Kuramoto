@@ -1,9 +1,8 @@
 // Function for computing the solution to the mean field Kuramoto PDE with noise level D. 
 #include "finite_difference.h"
 #include "order_parameter.h"
-#include <cmath>
 
-void finiteDifference(const Grid& f, Grid& fnew, Frequency& g,
+void finiteDifference(Grid& f, Grid& fnew, Frequency& g,
                       int thetaPoints, double dTheta, 
                       int omegaPoints, double dOmega, double minimumFrequency, double maximumFrequecy, 
                       double dt, double D, double K) {
@@ -26,13 +25,13 @@ void finiteDifference(const Grid& f, Grid& fnew, Frequency& g,
             int iPrev = (i - 1 + thetaPoints) % thetaPoints;
             if (fConvSin < 0) {
                 fnew[i][j] = f[iNext][j] * (dt * D / 2 / dTheta / dTheta - fConvSin * dt / dTheta) 
-                        + f[i][j] * (1 - dt * D / dTheta / dTheta + dt / dTheta * fConvSin + dt * fConvCos)
-                        + f[iPrev][j] * (dt * D / 2 / dTheta / dTheta); 
+                           + f[i][j] * (1 - dt * D / dTheta / dTheta + dt / dTheta * fConvSin + dt * fConvCos)
+                           + f[iPrev][j] * (dt * D / 2 / dTheta / dTheta); 
             }
             else {
                 fnew[i][j] = f[iNext][j] * (dt * D / 2 / dTheta / dTheta)
-                        + f[i][j] * (1 - dt * D / dTheta / dTheta - dt / dTheta * fConvSin + dt * fConvCos)
-                        + f[iPrev][j] * (dt * D / 2 / dTheta / dTheta + fConvSin * dt / dTheta);
+                           + f[i][j] * (1 - dt * D / dTheta / dTheta - dt / dTheta * fConvSin + dt * fConvCos)
+                           + f[iPrev][j] * (dt * D / 2 / dTheta / dTheta + fConvSin * dt / dTheta);
             }
         }
     }

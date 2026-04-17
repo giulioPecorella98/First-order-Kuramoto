@@ -1,6 +1,7 @@
 #include "order_parameter.h"
 
-OrderParameter computeR (Grid f, Frequency g, int thetaPoints, int omegaPoints, double dTheta, double dOmega) {
+OrderParameter computeR (Grid& f, Frequency& g, int thetaPoints, int omegaPoints, double dTheta, double dOmega) {
+    
     double Rcos = 0.0, Rsin = 0.0, R = 0.0;
     for (int i = 0; i < thetaPoints; i++) {
         double psi = i * dTheta;

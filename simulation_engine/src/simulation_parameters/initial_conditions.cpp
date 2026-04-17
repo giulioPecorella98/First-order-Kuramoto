@@ -7,7 +7,6 @@ void initialConditions(Grid& f, Frequency& g, int thetaPoints, double dTheta, in
     double mean, variance, amplitude;
     double sum = 0;
     
-    g = Frequency(omegaPoints, 0.0);
     std::cout << "Please choose one of the following natural frequency initial conditions:" << std::endl;
     std::cout << "1. n-modal Gaussian-type" << std::endl;
     std::cout << "2. uniform distribution" << std::endl;
@@ -30,7 +29,7 @@ void initialConditions(Grid& f, Frequency& g, int thetaPoints, double dTheta, in
                 std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
                 std::cin >> n;
             }
-            for (int mode = 0; mode < n; ++mode) {
+            for (int mode = 0; mode < n; mode++) {
                 std::cout << "Enter the mean of the distribution for mode " << mode + 1 << ": ";
                 std::cin >> mean;
                 while ((mean < minimumFrequency) || (mean > maximumFrequecy) || (std::cin.fail())) {
@@ -76,11 +75,10 @@ void initialConditions(Grid& f, Frequency& g, int thetaPoints, double dTheta, in
         default:
             break;
     }
-    // Normalization
+    // Normalization of g
     for (int j = 0; j < omegaPoints; j++) { sum += g[j]; }
     for (int j = 0; j < omegaPoints; j++) { g[j] /= (sum * dOmega); }
 
-    f = Grid(thetaPoints, std::vector<double>(omegaPoints, 0.0));  
     std::cout << "Please choose one of the following initial conditions for the density:" << std::endl;
     std::cout << "1. n-modal Gaussian-type in phase, uniform in natural frequency" << std::endl;
     std::cout << "2. to be implemented" << std::endl;
@@ -102,7 +100,7 @@ void initialConditions(Grid& f, Frequency& g, int thetaPoints, double dTheta, in
                 std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
                 std::cin >> n;
             }
-            for (int mode = 0; mode < n; ++mode) {
+            for (int mode = 0; mode < n; mode++) {
                 std::cout << "Enter the mean of the distribution for mode " << mode + 1 << ": ";
                 std::cin >> mean;
                 while ((mean < 0) || (mean > 2 * PI) || (std::cin.fail())) {
@@ -151,9 +149,9 @@ void initialConditions(Grid& f, Frequency& g, int thetaPoints, double dTheta, in
     }
     // Normalization for every natural frequency Omega
     sum = 0;
-    for (int j = 0; j < omegaPoints; ++j) {
-        for (int i = 0; i < thetaPoints; ++i) { sum += f[i][j]; }
-        for (int i = 0; i < thetaPoints; ++i) { f[i][j] /= (sum * dTheta); }
+    for (int j = 0; j < omegaPoints; j++) {
+        for (int i = 0; i < thetaPoints; i++) { sum += f[i][j]; }
+        for (int i = 0; i < thetaPoints; i++) { f[i][j] /= (sum * dTheta); }
         sum = 0;
     }
 }

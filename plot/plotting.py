@@ -36,8 +36,8 @@ def DataAnalysis():
 
     f = density.reshape((timePoints, thetaPoints, omegaPoints))
     dt = finalTime / (timePoints - 1)
-    dTheta = 2 * np.pi / thetaPoints
-    dOmega = (maximumFrequency - minimumFrequency) / omegaPoints
+    dTheta = 2 * np.pi / (thetaPoints - 1)
+    dOmega = (maximumFrequency - minimumFrequency) / (omegaPoints - 1)
 
     print("Plotting the evolution of the density...")
     vmax = np.max(f)
