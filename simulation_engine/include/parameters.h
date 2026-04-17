@@ -13,7 +13,6 @@ struct Parameters {
     double dt;
     int steps;
     double frameInterval;
-    int frameCount;
 };
 
 Parameters loadParameters();

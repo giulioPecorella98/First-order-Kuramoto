@@ -10,43 +10,45 @@ int main() {
     // Load parameters
     Parameters p = loadParameters();
 
-    // Allocate vectors for the finite difference scheme
-    Grid f(p.thetaPoints, std::vector<double>(p.omegaPoints));         // Solution
+    Grid f(p.thetaPoints, std::vector<double>(p.omegaPoints));         // Solution vector
     Grid fnew(p.thetaPoints,  std::vector<double>(p.omegaPoints));     // Auxiliary vector
     Frequency g(p.omegaPoints);                                        // Vector of natural frequencies
 
-    // Apply the initial conditions and start the simulation
+    // Apply the initial conditions
     initialConditions(f, g, p.thetaPoints, p.dTheta, p.omegaPoints, p.dOmega, p.minimumFrequecy, p.maximumFrequecy);
     std::vector<Grid> solution;      // Vector to store the solution at each frame
     std::vector<double> ordPar;      // Vector to store the order parameter at each frame
     solution.push_back(f);
     OrderParameter ordR =  computeR(f, g, p.thetaPoints, p.omegaPoints, p.dTheta, p.dOmega); 
     ordPar.push_back(ordR.R);
-    double currentTime = 0.0;
-    double nextFrameTime = p.frameInterval;
-    for (int t = 0; t < p.steps; ++t) {
-        if (t % p.frameCount == 0) {
-            int progress = static_cast<int>((static_cast<double>(t) / p.steps) * 100);
-            std::string bar(progress, '=');
-            bar.append(100 - progress, ' ');
-            std::cout << "\rComputing: [" << bar << "] " << progress << "%" << std::flush;
-        }
+
+    // Start the simulation
+    double updateTime = 0.0;
+    for (int t = 0; t < p.steps; t++) {
 
         // Compute the solution at each time step
         finiteDifference(f, fnew, g, p.thetaPoints, p.dTheta, p.omegaPoints, p.dOmega, p.minimumFrequecy, p.maximumFrequecy, p.dt, p.D, p.K);
         std::swap(f, fnew); 
         // Save the solution a the specified frame intervals
-        currentTime += p.dt;
-        if (currentTime >= nextFrameTime) {
+        updateTime += p.dt;
+        if (static_cast<int>(updateTime / p.frameInterval) >= 1) {
             solution.push_back(f); 
             OrderParameter ordR =  computeR(f, g, p.thetaPoints, p.omegaPoints, p.dTheta, p.dOmega); 
             ordPar.push_back(ordR.R);
-            nextFrameTime += p.frameInterval;
+            updateTime = 0.0;
         }
         else if (t == p.steps - 1) {
             solution.push_back(f); 
             OrderParameter ordR =  computeR(f, g, p.thetaPoints, p.omegaPoints, p.dTheta, p.dOmega); 
             ordPar.push_back(ordR.R);
+        }
+
+        // Simulation progress bar
+        int progress = static_cast<int>((static_cast<double>(t) / p.steps) * 100);
+        if (progress >= 1) {
+            std::string bar(progress, '=');
+            bar.append(100 - progress, ' ');
+            std::cout << "\rComputing: [" << bar << "] " << progress << "%" << std::flush;
         }
     }
     std::cout << "\rComputing: [" << std::string(100, '=') << "] 100%" << std::endl;
