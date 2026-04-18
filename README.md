@@ -82,12 +82,7 @@ cmake --build .
 ```
 
 
-Run
-
-```bash
-py main.py
-```
-
+Run the python script main.py.
 
 
 ---
