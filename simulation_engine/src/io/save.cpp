@@ -33,11 +33,11 @@ void saveSolution(std::vector<Grid>& solution, Frequency& g, std::vector<double>
         fwrite(&T, sizeof(double), 1, file);
         fwrite(&D, sizeof(double), 1, file);
         fwrite(&K, sizeof(double), 1, file);
-        fwrite(ordPar.data(), sizeof(double), ordPar.size(), file);
-        fwrite(g.data(), sizeof(double), g.size(), file);        
+        fwrite(ordPar.data(), sizeof(double), tPoints, file);
+        fwrite(g.data(), sizeof(double), omegaPoints, file);        
         for (const auto& f : solution) {                               // time
             for (const auto& row : f) {                                // theta
-                fwrite(row.data(), sizeof(double), row.size(), file);  // omega
+                fwrite(row.data(), sizeof(double), omegaPoints, file);  // omega
             }
         }
     fclose(file);
