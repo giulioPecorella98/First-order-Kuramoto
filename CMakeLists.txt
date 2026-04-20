@@ -11,7 +11,6 @@ include_directories(simulation_engine/include)
 
 set(SOURCES
     simulation_engine/src/main.cpp
-    simulation_engine/src/io/save.cpp
     simulation_engine/src/numerical_scheme/finite_difference.cpp
     simulation_engine/src/simulation_parameters/initial_conditions.cpp
     simulation_engine/src/simulation_parameters/parameters.cpp

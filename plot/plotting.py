@@ -1,4 +1,5 @@
 import numpy as np
+import struct
 import matplotlib.pyplot as plt
 from pathlib import Path
 import os
@@ -12,29 +13,34 @@ def DataAnalysis():
         simulation = input("Which simulation do you wish to load? ")
     
     continueAnalysis = True
+    density = []
+    r = []
     while continueAnalysis:
         try:
             with open(Path("saved_data") / simulation, "rb") as f:
-                thetaPoints = np.fromfile(f, dtype = np.int32, count = 1)[0]
-                omegaPoints = np.fromfile(f, dtype = np.int32, count = 1)[0]
-                timePoints = np.fromfile(f, dtype = np.int32, count = 1)[0]
-                minimumFrequency = np.fromfile(f, dtype = np.float64, count = 1)[0]
-                maximumFrequency = np.fromfile(f, dtype = np.float64, count = 1)[0]
-                finalTime = np.fromfile(f, dtype = np.float64, count = 1)[0]
-                D = np.fromfile(f, dtype = np.float64, count = 1)[0]
-                K = np.fromfile(f, dtype = np.float64, count = 1)[0]
-                r = np.fromfile(f, dtype = np.float64, count = timePoints)
+                thetaPoints = int(struct.unpack('i', f.read(4))[0])
+                omegaPoints = int(struct.unpack('i', f.read(4))[0])
+                minimumFrequency = struct.unpack('d', f.read(8))[0]
+                maximumFrequency = struct.unpack('d', f.read(8))[0]
+                finalTime = struct.unpack('d', f.read(8))[0]
+                D = struct.unpack('d', f.read(8))[0]
+                K = struct.unpack('d', f.read(8))[0]
                 g = np.fromfile(f, dtype = np.float64, count = omegaPoints)
-                density = np.fromfile(f, dtype = np.float64)
+                size = thetaPoints * omegaPoints
+                while True:
+                    data = f.read(size * 8)  
+                    if len(data) != size * 8:
+                        break
+                    density.append(np.frombuffer(data, dtype=np.float64))
+                    r.append(struct.unpack('d', f.read(8))[0])
+                density = np.array(density)
+                r = np.array(r)
+                timePoints = np.size(r)
                 continueAnalysis = False
         except Exception as e:
             print(f"An error occurred while reading the file: {e}")
             print(f"The available simulations are: {', '.join(os.listdir(Path('saved_data')))}")
             simulation = input("Try another file name: ")
-
-    expected_size = thetaPoints * omegaPoints * timePoints
-    if density.size != expected_size:
-        raise ValueError(f"Solution vector has wrong dimension: expected {expected_size}, got {density.size}")
 
     f = density.reshape((timePoints, thetaPoints, omegaPoints))
     dt = finalTime / (timePoints - 1)

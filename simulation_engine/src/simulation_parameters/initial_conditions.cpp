@@ -3,7 +3,7 @@
 
 void initialConditions(Grid& f, Frequency& g, int thetaPoints, double dTheta, int omegaPoints, double dOmega, double minimumFrequency, double maximumFrequecy) {   
     double PI = 3.14159265358979323846;
-    int choice, n;
+    double choice, n;
     double mean, variance, amplitude;
     double sum = 0;
     
@@ -13,17 +13,17 @@ void initialConditions(Grid& f, Frequency& g, int thetaPoints, double dTheta, in
     std::cout << "3. to be implemented" << std::endl; 
     std::cout << "Enter your choice (1, 2 or 3): ";
     std::cin >> choice;
-    while ((choice < 1) || (choice > 3) || (std::cin.fail())) {
+    while ((choice < 1) || (choice > 3) || (static_cast<int>(choice) != choice) || (std::cin.fail())) {
         std::cout << "Invalid choice. Please enter 1, 2 or 3: ";
         std::cin.clear();
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
         std::cin >> choice;
     }
-    switch (choice) {
+    switch (static_cast<int>(choice)) {
         case 1:
             std::cout << "Please choose the number of modes: ";
             std::cin >> n;
-            while ((n < 1) || (std::cin.fail())) {
+            while ((n < 1) || (static_cast<int>(n) != n) || (std::cin.fail())) {
                 std::cout << "Invalid choice. Please enter the number of modes: ";
                 std::cin.clear();
                 std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
@@ -84,13 +84,13 @@ void initialConditions(Grid& f, Frequency& g, int thetaPoints, double dTheta, in
     std::cout << "2. to be implemented" << std::endl;
     std::cout << "Enter your choice (1 or 2): ";
     std::cin >> choice;
-    while ((choice < 1) || (choice > 2) || (std::cin.fail())) {
+    while ((choice < 1) || (choice > 2) || (static_cast<int>(choice) != choice) || (std::cin.fail())) {
         std::cout << "Invalid choice. Please enter 1 or 2: ";
         std::cin.clear();
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
         std::cin >> choice;
     }
-    switch (choice) {
+    switch (static_cast<int>(choice)) {
         case 1:
             std::cout << "Please choose the number of modes: ";
             std::cin >> n;

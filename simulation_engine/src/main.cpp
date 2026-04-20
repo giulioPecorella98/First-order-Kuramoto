@@ -2,11 +2,23 @@
 #include "initial_conditions.h"
 #include "parameters.h"
 #include "order_parameter.h"
-#include "save.h"
+#include <filesystem>
 
 
 
 int main() {
+    // Enter the name of the binary file where the result will be saved
+    std::cout << "Enter the name of the file (without extension) where you want to save the result: ";
+    std::string filename;
+    std::cin >> filename;
+    //save the result in a binary file in the "saved_data" subfolder
+    std::filesystem::path fullpath = std::filesystem::path(PROJECT_ROOT) / "saved_data" / (filename);
+    FILE* file = fopen(fullpath.string().c_str(), "wb");
+    if (!file) {
+        std::cerr << "Error: file not saved. "<< std::endl;
+        return 1; 
+    } 
+
     // Load parameters
     Parameters p = loadParameters();
 
@@ -14,33 +26,46 @@ int main() {
     Grid fnew(p.thetaPoints,  std::vector<double>(p.omegaPoints, 0.0));     // Auxiliary vector
     Frequency g(p.omegaPoints);                                        // Vector of natural frequencies
 
+    fwrite(&p.thetaPoints, sizeof(int), 1, file);
+    fwrite(&p.omegaPoints, sizeof(int), 1, file);
+    fwrite(&p.minimumFrequency, sizeof(double), 1, file);
+    fwrite(&p.maximumFrequency, sizeof(double), 1, file);
+    fwrite(&p.T, sizeof(double), 1, file);
+    fwrite(&p.D, sizeof(double), 1, file);
+    fwrite(&p.K, sizeof(double), 1, file);
+    fwrite(g.data(), sizeof(double), p.omegaPoints, file);
+
     // Apply the initial conditions
-    initialConditions(f, g, p.thetaPoints, p.dTheta, p.omegaPoints, p.dOmega, p.minimumFrequecy, p.maximumFrequecy);
-    std::vector<Grid> solution;      // Vector to store the solution at each frame
-    std::vector<double> ordPar;      // Vector to store the order parameter at each frame
-    solution.push_back(f);
+    initialConditions(f, g, p.thetaPoints, p.dTheta, p.omegaPoints, p.dOmega, p.minimumFrequency, p.maximumFrequency);
+    for (const auto& row : f) {                                     // theta
+        fwrite(row.data(), sizeof(double), p.omegaPoints, file);  // omega
+    }
     OrderParameter ordR =  computeR(f, g, p.thetaPoints, p.omegaPoints, p.dTheta, p.dOmega); 
-    ordPar.push_back(ordR.R);
+    fwrite(&ordR.R, sizeof(double), 1, file);
 
     // Start the simulation
     double updateTime = 0.0;
     for (int t = 0; t < p.steps; t++) {
 
         // Compute the solution at each time step
-        finiteDifference(f, fnew, g, p.thetaPoints, p.dTheta, p.omegaPoints, p.dOmega, p.minimumFrequecy, p.maximumFrequecy, p.dt, p.D, p.K);
+        finiteDifference(f, fnew, g, p.thetaPoints, p.dTheta, p.omegaPoints, p.dOmega, p.minimumFrequency, p.maximumFrequency, p.dt, p.D, p.K);
         std::swap(f, fnew); 
         // Save the solution a the specified frame intervals
         updateTime += p.dt;
         if (static_cast<int>(updateTime / p.frameInterval) >= 1) {
-            solution.push_back(f); 
-            OrderParameter ordR =  computeR(f, g, p.thetaPoints, p.omegaPoints, p.dTheta, p.dOmega); 
-            ordPar.push_back(ordR.R);
+            for (const auto& row : f) {
+                fwrite(row.data(), sizeof(double), p.omegaPoints, file);
+            }
+            OrderParameter ordR =  computeR(f, g, p.thetaPoints, p.omegaPoints, p.dTheta, p.dOmega);
+            fwrite(&ordR.R, sizeof(double), 1, file);
             updateTime = 0.0;
         }
         else if (t == p.steps - 1) {
-            solution.push_back(f); 
+            for (const auto& row : f) {                                     
+                fwrite(row.data(), sizeof(double), p.omegaPoints, file); 
+            }
             OrderParameter ordR =  computeR(f, g, p.thetaPoints, p.omegaPoints, p.dTheta, p.dOmega); 
-            ordPar.push_back(ordR.R);
+            fwrite(&ordR.R, sizeof(double), 1, file);
         }
 
         // Simulation progress bar
@@ -53,9 +78,8 @@ int main() {
     }
     std::cout << "\rComputing: [" << std::string(100, '=') << "] 100%" << std::endl;
     std::cout << "Simulation completed successfully." << std::endl;
-	
-    int tPoints = static_cast<int>(solution.size());
-    saveSolution(solution, g, ordPar, p.thetaPoints, p.omegaPoints, tPoints, p.minimumFrequecy, p.maximumFrequecy, p.T, p.D, p.K); 
+    fclose(file);
+    std::cout << "Result saved successfully in " << fullpath.generic_string() << "." << std::endl;
 
     return 0;
 }
