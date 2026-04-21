@@ -17,6 +17,7 @@ int main() {
     }
     //save the result in a binary file in the "saved_data" subfolder
     std::filesystem::path fullpath = std::filesystem::path(PROJECT_ROOT) / "saved_data" / (filename);
+    std::filesystem::create_directories(fullpath.parent_path()); // Ensure the directory exists
     FILE* file = fopen(fullpath.string().c_str(), "wb");
     if (!file) {
         std::cerr << "Error: file not saved. "<< std::endl;
