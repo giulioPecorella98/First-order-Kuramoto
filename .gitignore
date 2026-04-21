@@ -26,6 +26,7 @@ kuramoto
 *.app
 *.bin
 *.elf
+saved_data/*
 
 # =========================
 # Object / static / shared libs
