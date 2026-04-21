@@ -8,9 +8,13 @@
 
 int main() {
     // Enter the name of the binary file where the result will be saved
-    std::cout << "Enter the name of the file (without extension) where you want to save the result: ";
+    std::cout << "Enter the name of the file where you want to save the result ('s' not available): ";
     std::string filename;
     std::cin >> filename;
+    while (filename == "s" || filename.empty()) {
+        std::cout << "Invalid filename. Please enter a valid filename (not 's' and not empty): ";
+        std::cin >> filename;
+    }
     //save the result in a binary file in the "saved_data" subfolder
     std::filesystem::path fullpath = std::filesystem::path(PROJECT_ROOT) / "saved_data" / (filename);
     FILE* file = fopen(fullpath.string().c_str(), "wb");

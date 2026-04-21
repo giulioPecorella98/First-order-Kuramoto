@@ -8,7 +8,7 @@ void initialConditions(Grid& f, Frequency& g, int thetaPoints, double dTheta, in
     double sum = 0;
     
     std::cout << "Please choose one of the following natural frequency initial conditions:" << std::endl;
-    std::cout << "1. n-modal Gaussian-type" << std::endl;
+    std::cout << "1. Gaussian-type" << std::endl;
     std::cout << "2. uniform distribution" << std::endl;
     std::cout << "3. to be implemented" << std::endl; 
     std::cout << "Enter your choice (1, 2 or 3): ";
@@ -21,44 +21,26 @@ void initialConditions(Grid& f, Frequency& g, int thetaPoints, double dTheta, in
     }
     switch (static_cast<int>(choice)) {
         case 1:
-            std::cout << "Please choose the number of modes: ";
-            std::cin >> n;
-            while ((n < 1) || (static_cast<int>(n) != n) || (std::cin.fail())) {
-                std::cout << "Invalid choice. Please enter the number of modes: ";
+            std::cout << "Enter the mean of the distribution: ";
+            std::cin >> mean;
+            while ((mean < minimumFrequency) || (mean > maximumFrequecy) || (std::cin.fail())) {
+                std::cout << "Invalid choice. The mean must be in the interval [" << minimumFrequency << ", " << maximumFrequecy << "]: ";
                 std::cin.clear();
                 std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-                std::cin >> n;
-            }
-            for (int mode = 0; mode < n; mode++) {
-                std::cout << "Enter the mean of the distribution for mode " << mode + 1 << ": ";
                 std::cin >> mean;
-                while ((mean < minimumFrequency) || (mean > maximumFrequecy) || (std::cin.fail())) {
-                    std::cout << "Invalid choice. The mean must be in the interval [" << minimumFrequency << ", " << maximumFrequecy << "]: ";
-                    std::cin.clear();
-                    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-                    std::cin >> mean;
-                }
-                std::cout << "Enter the variance of the distribution for mode " << mode + 1 << ": ";
+            }
+            std::cout << "Enter the variance of the distribution: ";
+            std::cin >> variance;
+            while ((variance <= 0) || (std::cin.fail())) {
+                std::cout << "Invalid choice. The variance must be a positive number: ";
+                std::cin.clear();
+                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
                 std::cin >> variance;
-                while ((variance <= 0) || (std::cin.fail())) {
-                    std::cout << "Invalid choice. The variance must be a positive number: ";
-                    std::cin.clear();
-                    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-                    std::cin >> variance;
-                }
-                std::cout << "Enter the amplitude of the distribution for mode " << mode + 1 << ": ";
-                std::cin >> amplitude;  
-                while ((amplitude < 0) || (std::cin.fail())) {
-                    std::cout << "Invalid choice. The amplitude must be a positive number: ";
-                    std::cin.clear();
-                    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-                    std::cin >> amplitude;
-                }
-                for (int j = 0; j < omegaPoints; j++) {
-                    double omega = minimumFrequency + j * dOmega;
-                    double diff = omega - mean;
-                    g[j] += amplitude * std::exp(- diff * diff / (2 * variance));
-                }    
+            }
+            for (int j = 0; j < omegaPoints; j++) {
+                double omega = minimumFrequency + j * dOmega;
+                double diff = omega - mean;
+                g[j] = std::exp(- diff * diff / variance);    
             }
             break;
         case 2:
@@ -81,11 +63,12 @@ void initialConditions(Grid& f, Frequency& g, int thetaPoints, double dTheta, in
 
     std::cout << "Please choose one of the following initial conditions for the density:" << std::endl;
     std::cout << "1. n-modal Gaussian-type in phase, uniform in natural frequency" << std::endl;
-    std::cout << "2. to be implemented" << std::endl;
-    std::cout << "Enter your choice (1 or 2): ";
+    std::cout << "2. uniform distribution" << std::endl;
+    std::cout << "3. to be implemented" << std::endl;
+    std::cout << "Enter your choice (1, 2 or 3): ";
     std::cin >> choice;
-    while ((choice < 1) || (choice > 2) || (static_cast<int>(choice) != choice) || (std::cin.fail())) {
-        std::cout << "Invalid choice. Please enter 1 or 2: ";
+    while ((choice < 1) || (choice > 3) || (static_cast<int>(choice) != choice) || (std::cin.fail())) {
+        std::cout << "Invalid choice. Please enter 1, 2 or 3: ";
         std::cin.clear();
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
         std::cin >> choice;
@@ -137,6 +120,13 @@ void initialConditions(Grid& f, Frequency& g, int thetaPoints, double dTheta, in
             }
             break;
         case 2:
+            for (int j = 0; j < omegaPoints; j++) {
+                 for (int i = 0; i < thetaPoints; i++) {
+                    f[i][j] = 1.0; 
+                }
+            }
+            break;
+        case 3:
             std::cout << "This initial condition is not implemented yet, the uniform distribution will be used instead. " << std::endl;
             for (int j = 0; j < omegaPoints; j++) {
                  for (int i = 0; i < thetaPoints; i++) {
