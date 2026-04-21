@@ -24,6 +24,7 @@ kuramoto
 *.exe
 *.out
 *.app
+*.bin
 *.elf
 
 # =========================
