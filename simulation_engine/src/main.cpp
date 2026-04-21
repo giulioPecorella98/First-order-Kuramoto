@@ -24,7 +24,7 @@ int main() {
 
     Grid f(p.thetaPoints, std::vector<double>(p.omegaPoints, 0.0));         // Solution vector
     Grid fnew(p.thetaPoints,  std::vector<double>(p.omegaPoints, 0.0));     // Auxiliary vector
-    Frequency g(p.omegaPoints);                                        // Vector of natural frequencies
+    Frequency g(p.omegaPoints, 0.0);                                        // Vector of natural frequencies
 
     fwrite(&p.thetaPoints, sizeof(int), 1, file);
     fwrite(&p.omegaPoints, sizeof(int), 1, file);
@@ -33,10 +33,10 @@ int main() {
     fwrite(&p.T, sizeof(double), 1, file);
     fwrite(&p.D, sizeof(double), 1, file);
     fwrite(&p.K, sizeof(double), 1, file);
-    fwrite(g.data(), sizeof(double), p.omegaPoints, file);
 
     // Apply the initial conditions
     initialConditions(f, g, p.thetaPoints, p.dTheta, p.omegaPoints, p.dOmega, p.minimumFrequency, p.maximumFrequency);
+    fwrite(g.data(), sizeof(double), p.omegaPoints, file);
     for (const auto& row : f) {                                     // theta
         fwrite(row.data(), sizeof(double), p.omegaPoints, file);  // omega
     }
