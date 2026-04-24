@@ -12,7 +12,7 @@ def main():
     print("-------------------------------------------------------------------")
     print("\nWhat do you want to do?")
     print("1) Run a new simulation")
-    print("2) Test order parameter R for different values of K")
+    print("2) Test order parameter dependence on K")
     print("3) Load a saved simulation")
     print("4) Exit")
 
@@ -35,7 +35,7 @@ def main():
             
         print("\nWhat do you want to do now?")
         print("1) Run a new simulation")
-        print("2) Test order parameter R for different values of K")
+        print("2) Test order parameter dependence on K")
         print("3) Load a saved simulation")
         print("4) Exit")
         userInput = input("Please type your choice: ")

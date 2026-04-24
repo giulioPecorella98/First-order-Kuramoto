@@ -3,7 +3,7 @@ Function to load the parameters of the simulation by asking the user to input th
 The function also computes some derived parameters such as the time step dt, the number of steps, 
 and the number of frames to be plotted, by taking care of the stability condition for the finite difference scheme.
 */
-#include "parameters.h"
+#include "parameters_one.h"
 #include <iostream>
 #include <limits>
 #include <algorithm>

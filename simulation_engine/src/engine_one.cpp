@@ -1,6 +1,6 @@
 #include "finite_difference.h"
 #include "initial_conditions.h"
-#include "parameters.h"
+#include "parameters_one.h"
 #include "order_parameter.h"
 #include <filesystem>
 
