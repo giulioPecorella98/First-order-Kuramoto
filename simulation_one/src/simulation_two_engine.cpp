@@ -67,7 +67,7 @@ int main() {
             std::swap(f, fnew); 
             OrderParameter ordRnew =  computeR(f, g, p.thetaPoints, p.omegaPoints, p.dTheta, p.dOmega); 
             Rnew = ordRnew.R;
-            if (std::abs(Rnew - R) < 0.1) { 
+            if (std::abs(Rnew - R) < 0.0001) { 
                 asymptotic ++; 
             }
             else { asymptotic = 0.0; }
