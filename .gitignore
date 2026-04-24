@@ -26,7 +26,8 @@ kuramoto
 *.app
 *.bin
 *.elf
-saved_data/*
+saved_simulations/*
+saved_order_parameters/*
 
 # =========================
 # Object / static / shared libs
