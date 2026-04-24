@@ -20,7 +20,8 @@ compile_commands.json
 # =========================
 # Binaries / executables
 # =========================
-kuramoto
+engine_one
+engine_two
 *.exe
 *.out
 *.app
