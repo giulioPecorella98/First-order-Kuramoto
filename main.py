@@ -12,27 +12,32 @@ def main():
     print("-------------------------------------------------------------------")
     print("\nWhat do you want to do?")
     print("1) Run a new simulation")
-    print("2) Load a saved simulation")
-    print("3) Exit")
+    print("2) Test order parameter R for different values of K")
+    print("3) Load a saved simulation")
+    print("4) Exit")
 
     userInput = input("Please type your choice: ")
-    while(userInput != "3"):
+    while(userInput != "4"):
 
         if userInput == "1":    
             project_root = os.path.dirname(os.path.abspath(__file__))
-            exe_path = os.path.join(project_root, "simulation_engine", "kuramoto")
+            exe_path = os.path.join(project_root, "simulation_one", "simulation_one")
             subprocess.run([exe_path])
-        
         elif userInput == "2":
+            project_root = os.path.dirname(os.path.abspath(__file__))
+            exe_path = os.path.join(project_root, "simulation_two", "simulation_two")
+            subprocess.run([exe_path])
+        elif userInput == "3":
             plotting.DataAnalysis()
-        
+    
         else:
             print("Command not valid, please type again.")
             
         print("\nWhat do you want to do now?")
         print("1) Run a new simulation")
-        print("2) Load a saved simulation")
-        print("3) Exit")
+        print("2) Test order parameter R for different values of K")
+        print("3) Load a saved simulation")
+        print("4) Exit")
         userInput = input("Please type your choice: ")
 
     print("Thank you for using the first order mean field Kuramoto model simulator! See you next time!")
