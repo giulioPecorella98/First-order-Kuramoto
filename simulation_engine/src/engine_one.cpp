@@ -27,7 +27,7 @@ int main() {
         std::cout << "Enter the name of the file where you want to save the result (print 's' to see saved files): ";
         std::cin >> filename;
     }
-    //save the result in a binary file in the "saved_data" subfolder
+    //save the result in a binary file in the "saved_simulations" subfolder
     std::filesystem::path fullpath = std::filesystem::path(PROJECT_ROOT) / "saved_simulations" / (filename);
     std::filesystem::create_directories(fullpath.parent_path()); // Ensure the directory exists
     FILE* file = fopen(fullpath.string().c_str(), "wb");

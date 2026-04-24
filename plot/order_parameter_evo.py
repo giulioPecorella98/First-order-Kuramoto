@@ -25,9 +25,12 @@ def orderParameterEvolution():
     print("Plotting the order parameter evolution")
     plt.figure()
     plt.plot(K, r)
-    plt.title(f"Order parameter evolution for K in [0, {K[-1]:.2f}]")
+    plt.title(f"Order parameter evolution for {simulation}")
     plt.xlim(0, K[-1])
     plt.ylim(0, 1.1)
     plt.xlabel(r"$K$")
     plt.ylabel(r"$r(K)$")
     plt.show(block = False)
+
+    input("Press Enter to close the plot...")
+    plt.close('all')

@@ -21,11 +21,11 @@ def main():
 
         if userInput == "1":    
             project_root = os.path.dirname(os.path.abspath(__file__))
-            exe_path = os.path.join(project_root, "simulation_one", "simulation_one")
+            exe_path = os.path.join(project_root, "simulation_engine", "engine_one")
             subprocess.run([exe_path])
         elif userInput == "2":
             project_root = os.path.dirname(os.path.abspath(__file__))
-            exe_path = os.path.join(project_root, "simulation_two", "simulation_two")
+            exe_path = os.path.join(project_root, "simulation_engine", "engine_two")
             subprocess.run([exe_path])
         elif userInput == "3":
             plotting.DataAnalysis()
