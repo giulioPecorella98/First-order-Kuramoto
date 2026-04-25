@@ -5,19 +5,26 @@ from pathlib import Path
 import os
 
 def orderParameterEvolution():
+
     simulation =  input("Which simulation do you wish to load? (type 's' to see available simulations) ")
     while simulation == 's':
+    
         print(f"The available simulations are: {', '.join(os.listdir(Path('saved_order_parameters')))}")
         simulation = input("Which simulation do you wish to load? ")
+    
     continueAnalysis = True
     while continueAnalysis:
+
         try:
-            with open(Path("saved_order_parameters") / simulation, "rb") as f:
-                KPoints = struct.unpack('i', f.read(4))[0]
-                K = np.fromfile(f, dtype = np.float64, count = KPoints)
-                r = np.fromfile(f, dtype = np.float64, count = KPoints)
+            with open(Path("saved_order_parameters") / simulation, "rb") as file:
+                
+                KPoints = struct.unpack('i', file.read(4))[0]
+                K = np.fromfile(file, dtype = np.float64, count = KPoints)
+                r = np.fromfile(file, dtype = np.float64, count = KPoints)
                 continueAnalysis = False
+
         except Exception as e:
+            
             print(f"An error occurred while reading the file: {e}")
             print(f"The available simulations are: {', '.join(os.listdir(Path('saved_order_parameters')))}")
             simulation = input("Try another file name: ")

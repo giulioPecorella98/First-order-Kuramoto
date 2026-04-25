@@ -18,20 +18,22 @@ def main():
 
     userInput = input("Please type your choice: ")
     while(userInput != "4"):
-
+    
         if userInput == "1":    
             project_root = os.path.dirname(os.path.abspath(__file__))
             exe_path = os.path.join(project_root, "simulation_engine", "engine_one")
             subprocess.run([exe_path])
+    
         elif userInput == "2":
             project_root = os.path.dirname(os.path.abspath(__file__))
             exe_path = os.path.join(project_root, "simulation_engine", "engine_two")
             subprocess.run([exe_path])
+    
         elif userInput == "3":
             plotting.DataAnalysis()
     
         else:
-            print("Command not valid, please type again.")
+            print("Command not valid, please try again.")
             
         print("\nWhat do you want to do now?")
         print("1) Run a new simulation")
