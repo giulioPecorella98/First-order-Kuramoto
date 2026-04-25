@@ -2,6 +2,7 @@
 
 struct Parameters {   
     double Kmax;
+    int Kpoints;
     double D; 
     double dTheta;
     int thetaPoints;

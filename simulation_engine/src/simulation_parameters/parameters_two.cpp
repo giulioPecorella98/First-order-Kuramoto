@@ -22,8 +22,17 @@ Parameters loadParameters() {
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
         std::cin >> Kmax;
     }
+    int Kpoints;
+    std::cout << "2) Enter the number of coupling strength points: ";
+    std::cin >> Kpoints;
+    while ((Kpoints <= 1) || (std::cin.fail())) {
+        std::cout << "Invalid choice. The number of coupling strength points must be an integer greater than 1: ";
+        std::cin.clear();
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        std::cin >> Kpoints;
+    }
     double D; 
-    std::cout << "2) Enter the noise level D: ";
+    std::cout << "3) Enter the noise level D: ";
     std::cin >> D;  
     while ((D < 0) || (std::cin.fail())) {
         std::cout << "Invalid choice. The noise level must be a nonnegative number: ";
@@ -32,7 +41,7 @@ Parameters loadParameters() {
         std::cin >> D;
     }  
     double dTheta;
-    std::cout << "3) Enter the space discretization: ";
+    std::cout << "4) Enter the space discretization: ";
     std::cin >> dTheta; 
     while ((dTheta <= 0) || (std::cin.fail())) {
         std::cout << "Invalid choice. The space discretization must be a positive number: ";
@@ -41,7 +50,7 @@ Parameters loadParameters() {
         std::cin >> dTheta;
     }     
     double minimumFrequency;
-    std::cout << "4) Enter the minimum natural frequency of the oscillators: ";
+    std::cout << "5) Enter the minimum natural frequency of the oscillators: ";
     std::cin >> minimumFrequency; 
     while (std::cin.fail()) {
         std::cout << "Invalid choice. Please try again: ";
@@ -50,7 +59,7 @@ Parameters loadParameters() {
         std::cin >> minimumFrequency;
     }      
     double maximumFrequency;
-    std::cout << "5) Enter the maximum natural frequency of the oscillators: ";
+    std::cout << "6) Enter the maximum natural frequency of the oscillators: ";
     std::cin >> maximumFrequency; 
     while (std::cin.fail() || (maximumFrequency < minimumFrequency)) {
         std::cout << "Invalid choice. Remember that the minimum frequency is at most equal to the maximum frequency: ";
@@ -59,7 +68,7 @@ Parameters loadParameters() {
         std::cin >> maximumFrequency;
     }
     double dOmega;
-    std::cout << "6) Enter the natural frequency discretization: ";
+    std::cout << "7) Enter the natural frequency discretization: ";
     std::cin >> dOmega; 
     while ((dOmega <= 0) || (std::cin.fail())) {
         std::cout << "Invalid choice. The natural frequency discretization must be a positive number: ";
@@ -74,5 +83,5 @@ Parameters loadParameters() {
     dOmega = (maximumFrequency - minimumFrequency) / (omegaPoints - 1);
     double omegaMax = std::max(std::abs(minimumFrequency), std::abs(maximumFrequency));
     
-    return {Kmax, D, dTheta, thetaPoints, minimumFrequency, maximumFrequency, dOmega, omegaPoints};
+    return {Kmax, Kpoints, D, dTheta, thetaPoints, minimumFrequency, maximumFrequency, dOmega, omegaPoints};
 }
