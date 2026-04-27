@@ -34,10 +34,18 @@ The simulator allows the user to:
 The user can specify a configuration (final time, noise level, coupling constant, 
 initial condition, natural frequency distribution), and simulate the evolution of the density.
 
-<div style="display: flex; justify-content: space-between; padding: 0 40px;">
-  <img src="docs/initial.png" style="width: 40%;">
-  <img src="docs/final.png" style="width: 40%;">
-</div>
+<table>
+  <tr>
+    <td align="center">
+      <img src="docs/initial.png" width="450">
+    </td>
+    <td style="width:80px;"></td>
+    <td align="center">
+      <img src="docs/final.png" width="450">
+    </td>
+  </tr>
+</table>
+--- 
 
 ---
 ## Phase synchronization dependence on K
