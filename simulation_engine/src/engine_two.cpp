@@ -51,19 +51,24 @@ int main() {
     double maxOmega = std::max(std::abs(p.minimumFrequency), std::abs(p.maximumFrequency));
     double R = ordR.R;
     double Rnew;
-    double Rold = R;
+    double Rold;
     int progress;
-    Grid f_initial = f;
-    Grid fnew_initial = fnew;
+    int steps;
+    int asymptotic;
+    double K;
+    double dt; 
+    Grid fInitial = f;
+    Grid fnewInitial = fnew;
 
     for (int i = 0; i < p.Kpoints; i++) {
 
-        f = f_initial;
-        fnew = fnew_initial;
-        double K = i * multiplyFactor;
-        double dt = std::min((0.9 * (p.dTheta * p.dTheta) / (p.D + (K + maxOmega) * p.dTheta + K * p.dTheta * p.dTheta)), 0.1);
-        int steps = static_cast<int>(p.Tmax / dt) + 1;
-        int asymptotic = 0;
+        f = fInitial;
+        fnew = fnewInitial;
+        Rold = R;
+        K = i * multiplyFactor;
+        dt = std::min((0.9 * (p.dTheta * p.dTheta) / (p.D + (K + maxOmega) * p.dTheta + K * p.dTheta * p.dTheta)), 0.1);
+        steps = static_cast<int>(p.Tmax / dt) + 1;
+        asymptotic = 0;
 
         for (int t = 0; t < steps; t++) {
            
@@ -74,9 +79,9 @@ int main() {
             Rnew = ordRnew.R;
 
             // Check if the order parameter has reached an asymptotic value, in which case we can stop the simulation and save the result
-            if (std::abs(Rnew - Rold) < 0.0001) { asymptotic ++; }
-            else { asymptotic = 0.0; }
-            if (asymptotic == 10) { 
+            if (std::abs(Rnew - Rold) < 0.000001) { asymptotic ++; }
+            else { asymptotic = 0; }
+            if (asymptotic == 100) { 
                 fwrite(&Rnew, sizeof(double), 1, file);   
                 break; 
             }   
