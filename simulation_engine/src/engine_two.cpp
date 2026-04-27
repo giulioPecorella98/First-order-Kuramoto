@@ -14,9 +14,9 @@ int main() {
     std::cin >> filename;
     while (filename == "s") {
 
-        std::filesystem::path savedDir = std::filesystem::path(PROJECT_ROOT) / "saved_order_parameters";
+        std::filesystem::path savedDir = std::filesystem::path(PROJECT_ROOT) / "save" / "order_parameter";
         if (std::filesystem::exists(savedDir) && std::filesystem::is_directory(savedDir)) {           
-            std::cout << "Saved files in 'saved_order_parameters' directory:" << std::endl;
+            std::cout << "Saved files in 'save/order_parameter' directory:" << std::endl;
             for (const auto& entry : std::filesystem::directory_iterator(savedDir)) {
                 if (entry.is_regular_file()) {
                     std::cout << " - " << entry.path().filename().string() << std::endl;
@@ -28,7 +28,7 @@ int main() {
         std::cin >> filename;
     }
 
-    std::filesystem::path fullpath = std::filesystem::path(PROJECT_ROOT) / "saved_order_parameters" / (filename);
+    std::filesystem::path fullpath = std::filesystem::path(PROJECT_ROOT) / "save" / "order_parameter" / (filename);
     std::filesystem::create_directories(fullpath.parent_path()); // Ensure the directory exists
     FILE* file = fopen(fullpath.string().c_str(), "wb");
     if (!file) {
@@ -48,7 +48,6 @@ int main() {
     initialConditions(f, g, p.thetaPoints, p.dTheta, p.omegaPoints, p.dOmega, p.minimumFrequency, p.maximumFrequency); 
     OrderParameter ordR =  computeR(f, g, p.thetaPoints, p.omegaPoints, p.dTheta, p.dOmega);              
     double multiplyFactor = p.Kmax / (p.Kpoints - 1);       
-    double Tmax = 10.0;        
     double maxOmega = std::max(std::abs(p.minimumFrequency), std::abs(p.maximumFrequency));
     double R = ordR.R;
     double Rnew;
@@ -63,7 +62,7 @@ int main() {
         fnew = fnew_initial;
         double K = i * multiplyFactor;
         double dt = std::min((0.9 * (p.dTheta * p.dTheta) / (p.D + (K + maxOmega) * p.dTheta + K * p.dTheta * p.dTheta)), 0.1);
-        int steps = static_cast<int>(Tmax / dt) + 1;
+        int steps = static_cast<int>(p.Tmax / dt) + 1;
         int asymptotic = 0;
 
         for (int t = 0; t < steps; t++) {
@@ -84,6 +83,7 @@ int main() {
             else if (t == steps - 1) { 
                 fwrite(&Rnew, sizeof(double), 1, file); 
                 std::cout << "\nWarning: the order parameter did not reach an asymptotic value for K = " << K << " ." << std::endl;
+                std::cout << "Consider increasing the maximum simulation time." << std::endl;
             }
             std::swap(Rold, Rnew); 
         }

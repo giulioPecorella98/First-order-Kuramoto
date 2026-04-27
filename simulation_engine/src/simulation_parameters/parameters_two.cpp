@@ -76,6 +76,15 @@ Parameters loadParameters() {
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
         std::cin >> dOmega;
     }
+    double Tmax;
+    std::cout << "8) Enter the maximum simulation time: ";
+    std::cin >> Tmax;
+    while ((Tmax <= 0) || (std::cin.fail())) {
+        std::cout << "Invalid choice. The maximum simulation time must be a positive number: ";
+        std::cin.clear();
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        std::cin >> Tmax;
+    }
 
     int thetaPoints = static_cast<int>((2 * PI / dTheta) + 1);
     dTheta = 2 * PI / (thetaPoints - 1);
@@ -83,5 +92,5 @@ Parameters loadParameters() {
     dOmega = (maximumFrequency - minimumFrequency) / (omegaPoints - 1);
     double omegaMax = std::max(std::abs(minimumFrequency), std::abs(maximumFrequency));
     
-    return {Kmax, Kpoints, D, dTheta, thetaPoints, minimumFrequency, maximumFrequency, dOmega, omegaPoints};
+    return {Kmax, Kpoints, D, dTheta, thetaPoints, minimumFrequency, maximumFrequency, dOmega, omegaPoints, Tmax};
 }

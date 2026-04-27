@@ -11,14 +11,14 @@ def orderParameterEvolution():
     simulation =  input("Which simulation do you wish to load? (type 's' to see available simulations) ")
     while simulation == 's':
     
-        print(f"The available simulations are: {', '.join(os.listdir(Path('save/order_parameters')))}")
+        print(f"The available simulations are: {', '.join(os.listdir(Path('save/order_parameter')))}")
         simulation = input("Which simulation do you wish to load? ")
     
     continueAnalysis = True
     while continueAnalysis:
 
         try:
-            with open(Path("save/order_parameters") / simulation, "rb") as file:
+            with open(Path("save/order_parameter") / simulation, "rb") as file:
                 
                 KPoints = struct.unpack('i', file.read(4))[0]
                 Kmax = struct.unpack('d', file.read(8))[0]
@@ -29,7 +29,7 @@ def orderParameterEvolution():
         except Exception as e:
             
             print(f"An error occurred while reading the file: {e}")
-            print(f"The available simulations are: {', '.join(os.listdir(Path('save/order_parameters')))}")
+            print(f"The available simulations are: {', '.join(os.listdir(Path('save/order_parameter')))}")
             simulation = input("Try another file name: ")
 
     print("Plotting the order parameter evolution")

@@ -12,9 +12,9 @@ int main() {
     std::string filename;
     std::cin >> filename;
     while (filename == "s") {
-        std::filesystem::path savedDir = std::filesystem::path(PROJECT_ROOT) / "saved_simulations";
+        std::filesystem::path savedDir = std::filesystem::path(PROJECT_ROOT) / "save" / "density";
         if (std::filesystem::exists(savedDir) && std::filesystem::is_directory(savedDir)) {
-            std::cout << "Saved files in 'saved_simulations' directory:" << std::endl;
+            std::cout << "Saved files in 'save/density' directory:" << std::endl;
             for (const auto& entry : std::filesystem::directory_iterator(savedDir)) {
                 if (entry.is_regular_file()) {
                     std::cout << " - " << entry.path().filename().string() << std::endl;
@@ -27,8 +27,8 @@ int main() {
         std::cout << "Enter the name of the file where you want to save the result (print 's' to see saved files): ";
         std::cin >> filename;
     }
-    //save the result in a binary file in the "saved_simulations" subfolder
-    std::filesystem::path fullpath = std::filesystem::path(PROJECT_ROOT) / "saved_simulations" / (filename);
+    //save the result in a binary file in the "save/density" subfolder
+    std::filesystem::path fullpath = std::filesystem::path(PROJECT_ROOT) / "save" / "density" / (filename);
     std::filesystem::create_directories(fullpath.parent_path()); // Ensure the directory exists
     FILE* file = fopen(fullpath.string().c_str(), "wb");
     if (!file) {
@@ -55,7 +55,7 @@ int main() {
     initialConditions(f, g, p.thetaPoints, p.dTheta, p.omegaPoints, p.dOmega, p.minimumFrequency, p.maximumFrequency);
     fwrite(g.data(), sizeof(double), p.omegaPoints, file);
     for (const auto& row : f) {                                     // theta
-        fwrite(row.data(), sizeof(double), p.omegaPoints, file);  // omega
+        fwrite(row.data(), sizeof(double), p.omegaPoints, file);    // omega
     }
     OrderParameter ordR =  computeR(f, g, p.thetaPoints, p.omegaPoints, p.dTheta, p.dOmega); 
     fwrite(&ordR.R, sizeof(double), 1, file);

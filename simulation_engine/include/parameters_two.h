@@ -10,6 +10,7 @@ struct Parameters {
     double maximumFrequency;
     double dOmega;
     int omegaPoints;
+    double Tmax;
 };
 
 Parameters loadParameters();
