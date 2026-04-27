@@ -6,14 +6,28 @@ import os
 
 
 
-def on_scroll(event):
+rightButtonPressed = False
+def onButtonPress(event):
+    global rightButtonPressed
+    if event.button == 3:
+        rightButtonPressed = True
+
+def onButtonRelease(event):
+    global rightButtonPressed   
+    if event.button == 3:
+        rightButtonPressed = False
+
+def onScroll(event):
     ax = event.inaxes
     if ax is None:
         return
-    if event.button == 'up':
-        ax.view_init(elev=30, azim=ax.azim + 5)
-    elif event.button == 'down':
-        ax.view_init(elev=30, azim=ax.azim - 5)
+    delta = 5 if event.button == 'up' else -5 if event.button == 'down' else 0
+    if delta == 0:
+        return
+    if rightButtonPressed:
+        ax.view_init(elev = ax.elev + delta, azim = ax.azim)
+    else:
+        ax.view_init(elev = 30, azim = ax.azim + delta)
 
     event.canvas.draw_idle()
 
@@ -108,8 +122,13 @@ def densityEvolution():
     fig1.colorbar(mappable, ax = ax1, shrink = 0.6, pad = 0.1)
     ax0.set_zlim(0, vmax)
     ax1.set_zlim(0, vmax)
-    fig0.canvas.mpl_connect('scroll_event', on_scroll)
-    fig1.canvas.mpl_connect('scroll_event', on_scroll)
+
+    fig0.canvas.mpl_connect('button_press_event', onButtonPress)
+    fig0.canvas.mpl_connect('button_release_event', onButtonRelease)
+    fig1.canvas.mpl_connect('button_press_event', onButtonPress)
+    fig1.canvas.mpl_connect('button_release_event', onButtonRelease)
+    fig0.canvas.mpl_connect('scroll_event', onScroll)
+    fig1.canvas.mpl_connect('scroll_event', onScroll)
     plt.show(block = False)
 
     print("Plotting the order parameter evolution")

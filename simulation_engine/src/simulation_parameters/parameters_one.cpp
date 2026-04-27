@@ -59,10 +59,10 @@ Parameters loadParameters() {
         std::cin >> minimumFrequency;
     }      
     double maximumFrequency;
-    std::cout << "6) Enter the maximum natural frequency of the oscillators: ";
+    std::cout << "6) Enter the maximum natural frequency of the oscillators (for identical oscillators consider adding a small value to minimum frequency): ";
     std::cin >> maximumFrequency; 
-    while (std::cin.fail() || (maximumFrequency < minimumFrequency)) {
-        std::cout << "Invalid choice. Remember that the minimum frequency is at most equal to the maximum frequency: ";
+    while (std::cin.fail() || (maximumFrequency <= minimumFrequency)) {
+        std::cout << "Invalid choice. Remember that the minimum frequency is at most equal to the maximum frequency up to a small value: ";
         std::cin.clear();
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
         std::cin >> maximumFrequency;
@@ -70,7 +70,7 @@ Parameters loadParameters() {
     double dOmega;
     std::cout << "7) Enter the natural frequency discretization: ";
     std::cin >> dOmega; 
-    while ((dTheta <= 0) || (std::cin.fail())) {
+    while ((dOmega <= 0) || (dOmega > (maximumFrequency - minimumFrequency)) || (std::cin.fail())) {
         std::cout << "Invalid choice. The natural frequency discretization must be a positive number: ";
         std::cin.clear();
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
