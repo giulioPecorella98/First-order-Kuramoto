@@ -4,18 +4,34 @@ import matplotlib.pyplot as plt
 from pathlib import Path
 import os
 
+
+
+def on_scroll(event):
+    ax = event.inaxes
+    if ax is None:
+        return
+    if event.button == 'up':
+        ax.view_init(elev=30, azim=ax.azim + 5)
+    elif event.button == 'down':
+        ax.view_init(elev=30, azim=ax.azim - 5)
+
+    event.canvas.draw_idle()
+
 def densityEvolution():
+
     simulation =  input("Which simulation do you wish to load? (type 's' to see available simulations) ")
     while simulation == 's':
-        print(f"The available simulations are: {', '.join(os.listdir(Path('saved_simulations')))}")
+        print(f"The available simulations are: {', '.join(os.listdir(Path('save/density')))}")
         simulation = input("Which simulation do you wish to load? ")
     
     continueAnalysis = True
-    density = []
+    rho = []
     r = []
+
     while continueAnalysis:
         try:
-            with open(Path("saved_simulations") / simulation, "rb") as f:
+            with open(Path("save/density") / simulation, "rb") as f:
+    
                 thetaPoints = int(struct.unpack('i', f.read(4))[0])
                 omegaPoints = int(struct.unpack('i', f.read(4))[0])
                 minimumFrequency = struct.unpack('d', f.read(8))[0]
@@ -25,24 +41,28 @@ def densityEvolution():
                 K = struct.unpack('d', f.read(8))[0]
                 g = np.fromfile(f, dtype = np.float64, count = omegaPoints)
                 size = thetaPoints * omegaPoints
+    
                 while True:
                     data = f.read(size * 8)  
                     if len(data) != size * 8:
                         break
-                    density.append(np.frombuffer(data, dtype = np.float64))
+                    rho.append(np.frombuffer(data, dtype = np.float64))
                     r.append(struct.unpack('d', f.read(8))[0])
-                density = np.array(density)
+  
+                rho = np.array(rho)
                 r = np.array(r)
                 timePoints = np.size(r)
                 continueAnalysis = False
+  
         except Exception as e:
             print(f"An error occurred while reading the file: {e}")
-            print(f"The available simulations are: {', '.join(os.listdir(Path('saved_simulations')))}")
+            print(f"The available simulations are: {', '.join(os.listdir(Path('save/density')))}")
             simulation = input("Try another file name: ")
 
-    rho = density.reshape((timePoints, thetaPoints, omegaPoints))
+    rho = rho.reshape((timePoints, thetaPoints, omegaPoints))
     dt = finalTime / (timePoints - 1)
 
+    # Plotting the time-lapse evolution of the density 
     print("Plotting the evolution of the density...")
     vmax = np.max(rho)
     fig, ax = plt.subplots()
@@ -61,6 +81,7 @@ def densityEvolution():
     plt.pause(2)
     plt.close(fig) 
 
+    # 3D plots of the initial and final density
     theta = np.linspace(0, 2 * np.pi, thetaPoints)
     omega = np.linspace(minimumFrequency, maximumFrequency, omegaPoints)
     Theta, Omega = np.meshgrid(theta, omega)
@@ -87,14 +108,7 @@ def densityEvolution():
     fig1.colorbar(mappable, ax = ax1, shrink = 0.6, pad = 0.1)
     ax0.set_zlim(0, vmax)
     ax1.set_zlim(0, vmax)
-
-    def on_scroll(event):
-        if event.button == 'up':
-            ax1.view_init(elev = 30, azim = ax1.azim + 5)
-        elif event.button == 'down':
-            ax1.view_init(elev = 30, azim = ax1.azim - 5)
-        fig1.canvas.draw_idle()
-
+    fig0.canvas.mpl_connect('scroll_event', on_scroll)
     fig1.canvas.mpl_connect('scroll_event', on_scroll)
     plt.show(block = False)
 
@@ -108,10 +122,10 @@ def densityEvolution():
     plt.ylabel(r"$r(t)$")
     plt.show(block = False)
 
-    print("Plotting the frequency distribution")
+    print("Plotting the natural frequency distribution")
     plt.figure()
     plt.plot(omega, g)
-    plt.title("Frequency distribution")
+    plt.title("Natural frequency distribution")
     plt.xlabel(r"$\Omega$")
     plt.ylabel(r"$g(\Omega)$")
     plt.xlim(minimumFrequency, maximumFrequency)

@@ -27,8 +27,7 @@ engine_two
 *.app
 *.bin
 *.elf
-saved_simulations/*
-saved_order_parameters/*
+save/*
 
 # =========================
 # Object / static / shared libs

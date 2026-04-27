@@ -2,6 +2,8 @@ import subprocess
 import os
 from plot import plotting
 
+
+
 def main():
     print("=========================================================================================")
     print("|            Welcome to the first order mean field Kuramoto model simulator!            |")

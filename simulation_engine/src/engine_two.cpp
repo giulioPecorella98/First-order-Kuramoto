@@ -52,10 +52,15 @@ int main() {
     double maxOmega = std::max(std::abs(p.minimumFrequency), std::abs(p.maximumFrequency));
     double R = ordR.R;
     double Rnew;
+    double Rold = R;
     int progress;
+    Grid f_initial = f;
+    Grid fnew_initial = fnew;
 
     for (int i = 0; i < p.Kpoints; i++) {
 
+        f = f_initial;
+        fnew = fnew_initial;
         double K = i * multiplyFactor;
         double dt = std::min((0.9 * (p.dTheta * p.dTheta) / (p.D + (K + maxOmega) * p.dTheta + K * p.dTheta * p.dTheta)), 0.1);
         int steps = static_cast<int>(Tmax / dt) + 1;
@@ -70,7 +75,7 @@ int main() {
             Rnew = ordRnew.R;
 
             // Check if the order parameter has reached an asymptotic value, in which case we can stop the simulation and save the result
-            if (std::abs(Rnew - R) < 0.0001) { asymptotic ++; }
+            if (std::abs(Rnew - Rold) < 0.0001) { asymptotic ++; }
             else { asymptotic = 0.0; }
             if (asymptotic == 10) { 
                 fwrite(&Rnew, sizeof(double), 1, file);   
@@ -80,7 +85,7 @@ int main() {
                 fwrite(&Rnew, sizeof(double), 1, file); 
                 std::cout << "\nWarning: the order parameter did not reach an asymptotic value for K = " << K << " ." << std::endl;
             }
-            std::swap(R, Rnew);
+            std::swap(Rold, Rnew); 
         }
 
         // Simulation progress bar
