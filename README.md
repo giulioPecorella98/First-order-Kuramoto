@@ -6,11 +6,11 @@ This project is a numerical simulator for the first order, mean field Kuramoto P
   <img src="docs/eq.png" alt="Kuramoto PDE">
 </p>
 
----
 ## Model
 
-The equation describes the evolution of the density function,  with:
+The equation describes the evolution of the density function, with:
 
+- ρ : density function
 - θ : phase variable
 - t : time variable
 - D : noise coefficient
@@ -18,7 +18,6 @@ The equation describes the evolution of the density function,  with:
 - g(Ω) : natural frequency distribution
 - K : coupling strength  
 
----
 ##  Description
 
 The simulator allows the user to:
@@ -26,9 +25,7 @@ The simulator allows the user to:
 - compute phase synchronization dependence on the coupling constant K
 - save simulation results for post processing and visualization
 - data visualization of the results
----
 
----
 ## Numerical simulation
 
 The user can specify a configuration (final time, noise level, coupling constant, 
@@ -45,25 +42,23 @@ initial condition, natural frequency distribution), and simulate the evolution o
     </td>
   </tr>
 </table>
---- 
 
----
 ## Phase synchronization dependence on K
 
-The user can specify a configuration (noise level, initial condition, natural frequency distribution
-
-## Data visualization
-
-The simulation produces the solution of the PDE that can be used to visualize:
-- density evolution
-- evolution of the order parameter r(t) 
+The user can specify a configuration (noise level, initial condition, natural frequency distribution), 
+and analyze the dependance of the phase synchrony on the coupling strength K. The phase syncrony is given by the absolute value of the order parameter
 
 <p align="center">
   <img src="docs/eq_r.png">
 </p>
 
+The phase synchrony can take values in the intervall [0,1]: when it is close to 0 there is low synchonization in the system, 
+while when it is close to 1 the system is almost completely synchronized. In the Kuramoto model, a greater coupling constant
+K usually implies greater phase synchrony
 
----
+<p align="center">
+  <img src="docs/eq_rK.png">
+</p>
 
 ##  How to build and run
 
