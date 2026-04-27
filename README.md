@@ -44,7 +44,6 @@ initial condition, natural frequency distribution), and simulate the evolution o
 
 The user can specify a configuration (noise level, initial condition, natural frequency distribution
 
-
 ## Data visualization
 
 The simulation produces the solution of the PDE that can be used to visualize:
