@@ -22,11 +22,27 @@ The equation describes the evolution of the density function,  with:
 ##  Description
 
 The simulator allows the user to:
-- configure system parameters (initial conditions, coupling, noise, etc.)
-- run numerical simulations of the Kuramoto dynamics
+- compute numerical simulations of the Kuramoto dynamics
+- compute phase synchronization dependence on the coupling constant K
 - save simulation results for post processing and visualization
 - data visualization of the results
 ---
+
+---
+## Numerical simulation
+
+The user can specify a configuration (final time, noise level, coupling constant, 
+initial condition, natural frequency distribution), and simulate the evolution of the density.
+
+<div style="display: flex; justify-content: space-between; padding: 0 40px;">
+  <img src="docs/initial.png" style="width: 40%;">
+  <img src="docs/final.png" style="width: 40%;">
+</div>
+
+---
+## Phase synchronization dependence on K
+
+The user can specify a configuration (noise level, initial condition, natural frequency distribution
 
 
 ## Data visualization
