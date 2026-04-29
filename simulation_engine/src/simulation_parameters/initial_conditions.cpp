@@ -1,7 +1,10 @@
 // Function to set the initial conditions of the simulation.
 #include "initial_conditions.h"
 
-void initialConditions(Grid& f, Frequency& g, int thetaPoints, double dTheta, int omegaPoints, double dOmega, double minimumFrequency, double maximumFrequecy) {   
+void initialConditions(Grid& f, Frequency& g, 
+                       int thetaPoints, double dTheta, 
+                       int frequencyPoints, double dFrequency, double minimumFrequency, double maximumFrequency) {   
+    
     double PI = 3.14159265358979323846;
     double choice, n;
     double mean, variance, amplitude;
@@ -23,8 +26,8 @@ void initialConditions(Grid& f, Frequency& g, int thetaPoints, double dTheta, in
         case 1:
             std::cout << "Enter the mean of the distribution: ";
             std::cin >> mean;
-            while ((mean < minimumFrequency) || (mean > maximumFrequecy) || (std::cin.fail())) {
-                std::cout << "Invalid choice. The mean must be in the interval [" << minimumFrequency << ", " << maximumFrequecy << "]: ";
+            while ((mean < minimumFrequency) || (mean > maximumFrequency) || (std::cin.fail())) {
+                std::cout << "Invalid choice. The mean must be in the interval [" << minimumFrequency << ", " << maximumFrequency << "]: ";
                 std::cin.clear();
                 std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
                 std::cin >> mean;
@@ -37,20 +40,20 @@ void initialConditions(Grid& f, Frequency& g, int thetaPoints, double dTheta, in
                 std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
                 std::cin >> variance;
             }
-            for (int j = 0; j < omegaPoints; j++) {
-                double omega = minimumFrequency + j * dOmega;
-                double diff = omega - mean;
+            for (int j = 0; j < frequencyPoints; j++) {
+                double frequency = minimumFrequency + j * dFrequency;
+                double diff = frequency - mean;
                 g[j] = std::exp(- diff * diff / variance);    
             }
             break;
         case 2:
-            for (int j = 0; j < omegaPoints; j++) {
+            for (int j = 0; j < frequencyPoints; j++) {
                 g[j] = 1.0; 
             }
             break;
         case 3:
             std::cout << "This initial condition is not implemented yet, the uniform distribution will be used instead. " << std::endl;
-            for (int j = 0; j < omegaPoints; j++) {
+            for (int j = 0; j < frequencyPoints; j++) {
                 g[j] = 1.0; 
             }
             break;
@@ -58,12 +61,13 @@ void initialConditions(Grid& f, Frequency& g, int thetaPoints, double dTheta, in
             break;
     }
     // Normalization of g
-    for (int j = 0; j < omegaPoints; j++) { sum += g[j]; }
-    for (int j = 0; j < omegaPoints; j++) { g[j] /= (sum * dOmega); }
+    for (int j = 0; j < frequencyPoints; j++) { sum += g[j]; }
+    for (int j = 0; j < frequencyPoints; j++) { g[j] /= (sum * dFrequency); }
+
 
     std::cout << "Please choose one of the following initial conditions for the density:" << std::endl;
     std::cout << "1. n-modal Gaussian-type in phase, uniform in natural frequency" << std::endl;
-    std::cout << "2. uniform distribution" << std::endl;
+    std::cout << "2. uniform distribution in phase and natural frequency" << std::endl;
     std::cout << "3. to be implemented" << std::endl;
     std::cout << "Enter your choice (1, 2 or 3): ";
     std::cin >> choice;
@@ -113,14 +117,14 @@ void initialConditions(Grid& f, Frequency& g, int thetaPoints, double dTheta, in
                     double diff = theta - mean;
                     if (diff > PI) {diff -= 2*PI;}
                     else if (diff < -PI) {diff += 2*PI;}
-                    for (int j = 0; j < omegaPoints; j++) {
+                    for (int j = 0; j < frequencyPoints; j++) {
                         f[i][j] += amplitude * std::exp(-diff * diff / (2 * variance));
                     }    
                 }
             }
             break;
         case 2:
-            for (int j = 0; j < omegaPoints; j++) {
+            for (int j = 0; j < frequencyPoints; j++) {
                  for (int i = 0; i < thetaPoints; i++) {
                     f[i][j] = 1.0; 
                 }
@@ -128,7 +132,7 @@ void initialConditions(Grid& f, Frequency& g, int thetaPoints, double dTheta, in
             break;
         case 3:
             std::cout << "This initial condition is not implemented yet, the uniform distribution will be used instead. " << std::endl;
-            for (int j = 0; j < omegaPoints; j++) {
+            for (int j = 0; j < frequencyPoints; j++) {
                  for (int i = 0; i < thetaPoints; i++) {
                     f[i][j] = 1.0; 
                 }
@@ -139,7 +143,7 @@ void initialConditions(Grid& f, Frequency& g, int thetaPoints, double dTheta, in
     }
     // Normalization for every natural frequency Omega
     sum = 0;
-    for (int j = 0; j < omegaPoints; j++) {
+    for (int j = 0; j < frequencyPoints; j++) {
         for (int i = 0; i < thetaPoints; i++) { sum += f[i][j]; }
         for (int i = 0; i < thetaPoints; i++) { f[i][j] /= (sum * dTheta); }
         sum = 0;

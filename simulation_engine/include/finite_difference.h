@@ -5,5 +5,5 @@ using Frequency = std::vector<double>;
 
 void finiteDifference(Grid& f, Grid& fnew, Frequency& g, 
                       int thetaPoints, double dTheta, 
-                      int omegaPoints, double dOmega, double minimumFrequency, double maximumFrequecy, 
+                      int frequencyPoints, double dFrequency, double minimumFrequency, double maximumFrequency, 
                       double dt, double D, double K);

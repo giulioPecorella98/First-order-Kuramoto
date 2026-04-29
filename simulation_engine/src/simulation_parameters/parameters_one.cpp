@@ -11,7 +11,6 @@ and the number of frames to be plotted, by taking care of the stability conditio
 Parameters loadParameters() {
     
     double PI = 3.14159265358979323846;
-
     std::cout << "\nParameters acquisitions." << std::endl;
     double T;   
     std::cout << "1) Enter the final time T: ";
@@ -41,10 +40,10 @@ Parameters loadParameters() {
         std::cin >> K;
     }            
     double dTheta;
-    std::cout << "4) Enter the space discretization: ";
+    std::cout << "4) Enter the phase discretization: ";
     std::cin >> dTheta; 
     while ((dTheta <= 0) || (std::cin.fail())) {
-        std::cout << "Invalid choice. The space discretization must be a positive number: ";
+        std::cout << "Invalid choice. The phase discretization must be a positive number: ";
         std::cin.clear();
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
         std::cin >> dTheta;
@@ -67,14 +66,14 @@ Parameters loadParameters() {
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
         std::cin >> maximumFrequency;
     }
-    double dOmega;
+    double dFrequency;
     std::cout << "7) Enter the natural frequency discretization: ";
-    std::cin >> dOmega; 
-    while ((dOmega <= 0) || (dOmega > (maximumFrequency - minimumFrequency)) || (std::cin.fail())) {
+    std::cin >> dFrequency; 
+    while ((dFrequency <= 0) || (dFrequency > (maximumFrequency - minimumFrequency)) || (std::cin.fail())) {
         std::cout << "Invalid choice. The natural frequency discretization must be a positive number: ";
         std::cin.clear();
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-        std::cin >> dOmega;
+        std::cin >> dFrequency;
     }
     double framePerSeconds;
     std::cout << "8) Enter the number of frames per seconds: ";
@@ -88,8 +87,8 @@ Parameters loadParameters() {
 
     int thetaPoints = static_cast<int>((2 * PI / dTheta) + 1);
     dTheta = 2 * PI / (thetaPoints - 1);
-    int omegaPoints = static_cast<int>(((maximumFrequency - minimumFrequency) / dOmega) + 1);
-    dOmega = (maximumFrequency - minimumFrequency) / (omegaPoints - 1);
+    int frequencyPoints = static_cast<int>(((maximumFrequency - minimumFrequency) / dFrequency) + 1);
+    dFrequency = (maximumFrequency - minimumFrequency) / (frequencyPoints - 1);
     double omegaMax = std::max(std::abs(minimumFrequency), std::abs(maximumFrequency));
     //Stability condition for the finite difference scheme
     double dtMax = std::min(0.9 * (dTheta * dTheta) / (2 * D + (K + omegaMax) * dTheta + K * dTheta * dTheta), T / 100);  
@@ -97,5 +96,5 @@ Parameters loadParameters() {
     double frameInterval = 1.0 / (T * framePerSeconds);
     double dt = std::min(T /  static_cast<double>(steps), frameInterval);  
     
-    return {T, D, K, dTheta, thetaPoints, minimumFrequency, maximumFrequency, dOmega, omegaPoints, dt, steps, frameInterval};
+    return {T, D, K, dTheta, thetaPoints, minimumFrequency, maximumFrequency, dFrequency, frequencyPoints, dt, steps, frameInterval};
 }

@@ -7,4 +7,4 @@ using Frequency = std::vector<double>;
 
 void initialConditions(Grid& f, Frequency& g, 
                        int thetaPoints, double dTheta, 
-                       int omegaPoints, double dOmega, double minimumFrequency, double maximumFrequecy);
+                       int frequencyPoints, double dFrequency, double minimumFrequency, double maximumFrequency);

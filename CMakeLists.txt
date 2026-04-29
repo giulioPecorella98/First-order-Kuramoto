@@ -11,6 +11,7 @@ include_directories(simulation_engine/include)
 
 set(SOURCES_one
     simulation_engine/src/engine_one.cpp
+    simulation_engine/src/saving/saving_density.cpp
     simulation_engine/src/numerical_scheme/finite_difference.cpp
     simulation_engine/src/simulation_parameters/initial_conditions.cpp
     simulation_engine/src/simulation_parameters/parameters_one.cpp
@@ -19,6 +20,7 @@ set(SOURCES_one
 
 set(SOURCES_two
     simulation_engine/src/engine_two.cpp
+    simulation_engine/src/saving/saving_r.cpp
     simulation_engine/src/numerical_scheme/finite_difference.cpp
     simulation_engine/src/simulation_parameters/initial_conditions.cpp
     simulation_engine/src/simulation_parameters/parameters_two.cpp

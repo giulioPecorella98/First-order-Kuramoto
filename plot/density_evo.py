@@ -28,33 +28,33 @@ def onScroll(event):
         ax.view_init(elev = ax.elev + delta, azim = ax.azim)
     else:
         ax.view_init(elev = 30, azim = ax.azim + delta)
-
     event.canvas.draw_idle()
 
 def densityEvolution():
 
-    simulation =  input("Which simulation do you wish to load? (type 's' to see available simulations) ")
+    simulation =  input("Which simulation do you wish to load? (type 's' to see available simulations, 'q' to quit) ")
     while simulation == 's':
         print(f"The available simulations are: {', '.join(os.listdir(Path('save/density')))}")
         simulation = input("Which simulation do you wish to load? ")
+    if simulation == 'q':
+        return
     
     continueAnalysis = True
     rho = []
     r = []
-
     while continueAnalysis:
         try:
             with open(Path("save/density") / simulation, "rb") as f:
     
                 thetaPoints = int(struct.unpack('i', f.read(4))[0])
-                omegaPoints = int(struct.unpack('i', f.read(4))[0])
+                frequencyPoints = int(struct.unpack('i', f.read(4))[0])
                 minimumFrequency = struct.unpack('d', f.read(8))[0]
                 maximumFrequency = struct.unpack('d', f.read(8))[0]
                 finalTime = struct.unpack('d', f.read(8))[0]
                 D = struct.unpack('d', f.read(8))[0]
                 K = struct.unpack('d', f.read(8))[0]
-                g = np.fromfile(f, dtype = np.float64, count = omegaPoints)
-                size = thetaPoints * omegaPoints
+                g = np.fromfile(f, dtype = np.float64, count = frequencyPoints)
+                size = thetaPoints * frequencyPoints
     
                 while True:
                     data = f.read(size * 8)  
@@ -73,7 +73,7 @@ def densityEvolution():
             print(f"The available simulations are: {', '.join(os.listdir(Path('save/density')))}")
             simulation = input("Try another file name: ")
 
-    rho = rho.reshape((timePoints, thetaPoints, omegaPoints))
+    rho = rho.reshape((timePoints, thetaPoints, frequencyPoints))
     dt = finalTime / (timePoints - 1)
 
     # Plotting the time-lapse evolution of the density 
@@ -97,7 +97,7 @@ def densityEvolution():
 
     # 3D plots of the initial and final density
     theta = np.linspace(0, 2 * np.pi, thetaPoints)
-    omega = np.linspace(minimumFrequency, maximumFrequency, omegaPoints)
+    omega = np.linspace(minimumFrequency, maximumFrequency, frequencyPoints)
     Theta, Omega = np.meshgrid(theta, omega)
     fig0 = plt.figure()
     ax0 = fig0.add_subplot(111, projection = '3d')

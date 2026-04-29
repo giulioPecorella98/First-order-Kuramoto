@@ -10,4 +10,6 @@ struct OrderParameter {
     double R;
 };
 
-OrderParameter computeR (Grid& f, Frequency& g,  int thetaPoints, int omegaPoints, double dTheta, double dOmega); 
+OrderParameter computeR (Grid& f, Frequency& g,  
+                         int thetaPoints, int frequencyPoints, 
+                         double dTheta, double dFrequency); 

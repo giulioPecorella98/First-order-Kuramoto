@@ -2,32 +2,17 @@
 #include "initial_conditions.h"
 #include "parameters_two.h"
 #include "order_parameter.h"
-#include <filesystem>
+#include "saving_r.h"
 
 
 
 int main() {
-
-    // Enter the name of the binary file where the result will be saved
-    std::cout << "Enter the name of the file where you want to save the result (print 's' to see saved files): ";
-    std::string filename;
-    std::cin >> filename;
-    while (filename == "s") {
-
-        std::filesystem::path savedDir = std::filesystem::path(PROJECT_ROOT) / "save" / "order_parameter";
-        if (std::filesystem::exists(savedDir) && std::filesystem::is_directory(savedDir)) {           
-            std::cout << "Saved files in 'save/order_parameter' directory:" << std::endl;
-            for (const auto& entry : std::filesystem::directory_iterator(savedDir)) {
-                if (entry.is_regular_file()) {
-                    std::cout << " - " << entry.path().filename().string() << std::endl;
-                }
-            }
-        } 
-        else { std::cout << "No saved files found." << std::endl; } 
-        std::cout << "Enter the name of the file where you want to save the result (print 's' to see saved files): ";
-        std::cin >> filename;
+    // Enter the name of the binary file where the result will be saved, and save the result in a binary file in the "save/order_parameter" subfolder
+    std::string filename = save();
+    if (filename == "quit") {
+        std::cout << "Returning to the main menu..." << std::endl;
+        return 0;
     }
-
     std::filesystem::path fullpath = std::filesystem::path(PROJECT_ROOT) / "save" / "order_parameter" / (filename);
     std::filesystem::create_directories(fullpath.parent_path()); // Ensure the directory exists
     FILE* file = fopen(fullpath.string().c_str(), "wb");

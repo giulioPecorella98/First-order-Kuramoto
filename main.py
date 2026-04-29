@@ -5,13 +5,13 @@ from plot import plotting
 
 
 def main():
-    print("=========================================================================================")
-    print("|            Welcome to the first order mean field Kuramoto model simulator!            |")
-    print("=========================================================================================")
-    print(" Here you have the opportunity to simulate the dynamics of the first order Kuramoto")
-    print(" model, choosing the initial distribution of the oscillators, the natural frequency")
-    print(" distribution, the noise level D, and the coupling constant K.")
-    print("-------------------------------------------------------------------")
+    print("==========================================================================================")
+    print("|             Welcome to the first order mean field Kuramoto model simulator!            |")
+    print("==========================================================================================")
+    print("    Here you have the opportunity to simulate the dynamics of the first order Kuramoto")
+    print("    model, choosing the initial distribution of the oscillators, the natural frequency")
+    print("    distribution, the noise level D, and the coupling constant K.")
+    print("------------------------------------------------------------------------------------------")
     print("\nWhat do you want to do?")
     print("1) Run a new simulation")
     print("2) Test order parameter dependence on K")
@@ -22,16 +22,19 @@ def main():
     while(userInput != "4"):
     
         if userInput == "1":    
+            print()
             project_root = os.path.dirname(os.path.abspath(__file__))
             exe_path = os.path.join(project_root, "simulation_engine", "engine_one")
             subprocess.run([exe_path])
     
         elif userInput == "2":
+            print()
             project_root = os.path.dirname(os.path.abspath(__file__))
             exe_path = os.path.join(project_root, "simulation_engine", "engine_two")
             subprocess.run([exe_path])
     
         elif userInput == "3":
+            print()
             plotting.DataAnalysis()
     
         else:
