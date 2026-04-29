@@ -92,7 +92,7 @@ Parameters loadParameters() {
     dOmega = (maximumFrequency - minimumFrequency) / (omegaPoints - 1);
     double omegaMax = std::max(std::abs(minimumFrequency), std::abs(maximumFrequency));
     //Stability condition for the finite difference scheme
-    double dtMax = std::min(0.9 * (dTheta * dTheta) / (D + (K + omegaMax) * dTheta + K * dTheta * dTheta), T / 100);  
+    double dtMax = std::min(0.9 * (dTheta * dTheta) / (2 * D + (K + omegaMax) * dTheta + K * dTheta * dTheta), T / 100);  
     int steps = static_cast<int>(T / dtMax) + 1;
     double frameInterval = 1.0 / (T * framePerSeconds);
     double dt = std::min(T /  static_cast<double>(steps), frameInterval);  

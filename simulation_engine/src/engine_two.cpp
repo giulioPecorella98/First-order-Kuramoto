@@ -66,7 +66,7 @@ int main() {
         fnew = fnewInitial;
         Rold = R;
         K = i * multiplyFactor;
-        dt = std::min((0.9 * (p.dTheta * p.dTheta) / (p.D + (K + maxOmega) * p.dTheta + K * p.dTheta * p.dTheta)), 0.1);
+        dt = std::min((0.9 * (p.dTheta * p.dTheta) / (2 * p.D + (K + maxOmega) * p.dTheta + K * p.dTheta * p.dTheta)), p.Tmax / 100);
         steps = static_cast<int>(p.Tmax / dt) + 1;
         asymptotic = 0;
 
@@ -79,16 +79,19 @@ int main() {
             Rnew = ordRnew.R;
 
             // Check if the order parameter has reached an asymptotic value, in which case we can stop the simulation and save the result
-            if (std::abs(Rnew - Rold) < 0.000001) { asymptotic ++; }
-            else { asymptotic = 0; }
-            if (asymptotic == 100) { 
-                fwrite(&Rnew, sizeof(double), 1, file);   
-                break; 
-            }   
-            else if (t == steps - 1) { 
-                fwrite(&Rnew, sizeof(double), 1, file); 
-                std::cout << "\nWarning: the order parameter did not reach an asymptotic value for K = " << K << " ." << std::endl;
-                std::cout << "Consider increasing the maximum simulation time." << std::endl;
+            if (t < 0 || t == steps - 1) { // We only check for asymptotic behavior in the second half of the simulation to give the system some time to evolve
+            //if (t > steps / 2) {
+                if (std::abs(Rnew - Rold) < 0.0001) { asymptotic ++; }
+                else { asymptotic = 0; }
+                if (asymptotic == 100) { 
+                    fwrite(&Rnew, sizeof(double), 1, file);   
+                    break; 
+                }  
+                else if (t == steps - 1) { 
+                    fwrite(&Rnew, sizeof(double), 1, file); 
+                    std::cout << "\nWarning: the order parameter did not reach an asymptotic value for K = " << K << " ." << std::endl;
+                    std::cout << "Consider increasing the maximum simulation time." << std::endl;
+                }
             }
             std::swap(Rold, Rnew); 
         }

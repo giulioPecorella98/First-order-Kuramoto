@@ -8,10 +8,10 @@ void finiteDifference(Grid& f, Grid& fnew, Frequency& g,
                       double dt, double D, double K) {
 
     OrderParameter r =  computeR(f, g, thetaPoints, omegaPoints, dTheta, dOmega);                  
-    for (int j = 0; j < omegaPoints; ++j) {
+    for (int j = 0; j < omegaPoints; j++) {
 
         double omega = minimumFrequency + j * dOmega;
-        for (int i = 0; i < thetaPoints; ++i) {    
+        for (int i = 0; i < thetaPoints; i++) {    
 
             double theta = i * dTheta;
             // Compute the convolution terms by employing the order parameter R and the mean phase psi.
@@ -24,25 +24,25 @@ void finiteDifference(Grid& f, Grid& fnew, Frequency& g,
             int iNext = (i + 1) % thetaPoints;
             int iPrev = (i - 1 + thetaPoints) % thetaPoints;
             if (fConvSin < 0) {
-                fnew[i][j] = f[iNext][j] * (dt * D / 2 / dTheta / dTheta - fConvSin * dt / dTheta) 
-                           + f[i][j] * (1 - dt * D / dTheta / dTheta + dt / dTheta * fConvSin + dt * fConvCos)
-                           + f[iPrev][j] * (dt * D / 2 / dTheta / dTheta); 
+                fnew[i][j] = f[iNext][j] * (dt * D / dTheta / dTheta - fConvSin * dt / dTheta) 
+                           + f[i][j] * (1 - 2 * dt * D / dTheta / dTheta + dt / dTheta * fConvSin + dt * fConvCos)
+                           + f[iPrev][j] * (dt * D /  dTheta / dTheta); 
             }
             else {
-                fnew[i][j] = f[iNext][j] * (dt * D / 2 / dTheta / dTheta)
-                           + f[i][j] * (1 - dt * D / dTheta / dTheta - dt / dTheta * fConvSin + dt * fConvCos)
-                           + f[iPrev][j] * (dt * D / 2 / dTheta / dTheta + fConvSin * dt / dTheta);
+                fnew[i][j] = f[iNext][j] * (dt * D / dTheta / dTheta)
+                           + f[i][j] * (1 - 2 * dt * D / dTheta / dTheta - dt / dTheta * fConvSin + dt * fConvCos)
+                           + f[iPrev][j] * (dt * D / dTheta / dTheta + fConvSin * dt / dTheta);
             }
         }
     }
 
     // Mass conservation for every natural frequency Omega
     double sum = 0;
-    for (int j = 0; j < omegaPoints; ++j) {
-        for (int i = 0; i < thetaPoints; ++i) {
+    for (int j = 0; j < omegaPoints; j++) {
+        for (int i = 0; i < thetaPoints; i++) {
             sum += fnew[i][j];
         }
-        for (int i = 0; i < thetaPoints; ++i) {
+        for (int i = 0; i < thetaPoints; i++) {
             fnew[i][j] /= (sum * dTheta);
         }
         sum = 0;
