@@ -8,8 +8,8 @@ struct Parameters {
     int thetaPoints;
     double minimumFrequency;
     double maximumFrequency;
-    double dOmega;
-    int omegaPoints;
+    double dFrequency;
+    int frequencyPoints;
     double Tmax;
 };
 

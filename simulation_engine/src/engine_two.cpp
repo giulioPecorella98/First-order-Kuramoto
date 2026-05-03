@@ -14,7 +14,6 @@ int main() {
         return 0;
     }
     std::filesystem::path fullpath = std::filesystem::path(PROJECT_ROOT) / "save" / "order_parameter" / (filename);
-    std::filesystem::create_directories(fullpath.parent_path()); // Ensure the directory exists
     FILE* file = fopen(fullpath.string().c_str(), "wb");
     if (!file) {
         std::cerr << "Error: file not saved. "<< std::endl;
@@ -25,15 +24,15 @@ int main() {
     fwrite(&p.Kpoints, sizeof(int), 1, file);
     fwrite(&p.Kmax, sizeof(double), 1, file);
 
-    Grid f(p.thetaPoints, std::vector<double>(p.omegaPoints, 0.0));         // Solution vector
-    Grid fnew(p.thetaPoints,  std::vector<double>(p.omegaPoints, 0.0));     // Auxiliary vector
-    Frequency g(p.omegaPoints, 0.0);                                        // Vector of natural frequencies
+    Grid f(p.thetaPoints, Frequency(p.frequencyPoints, 0.0));         // Solution vector
+    Grid fnew(p.thetaPoints,  Frequency(p.frequencyPoints, 0.0));     // Auxiliary vector
+    Frequency g(p.frequencyPoints, 0.0);                                        // Vector of natural frequencies
 
     // Apply the initial conditions and run the simulation for different values of K, saving the order parameter R for each value of K in the binary file
-    initialConditions(f, g, p.thetaPoints, p.dTheta, p.omegaPoints, p.dOmega, p.minimumFrequency, p.maximumFrequency); 
-    OrderParameter ordR =  computeR(f, g, p.thetaPoints, p.omegaPoints, p.dTheta, p.dOmega);              
+    initialConditions(f, g, p.thetaPoints, p.dTheta, p.frequencyPoints, p.dFrequency, p.minimumFrequency, p.maximumFrequency); 
+    OrderParameter ordR =  computeR(f, g, p.thetaPoints, p.frequencyPoints, p.dTheta, p.dFrequency);              
     double multiplyFactor = p.Kmax / (p.Kpoints - 1);       
-    double maxOmega = std::max(std::abs(p.minimumFrequency), std::abs(p.maximumFrequency));
+    double maxFrequency = std::max(std::abs(p.minimumFrequency), std::abs(p.maximumFrequency));
     double R = ordR.R;
     double Rnew;
     double Rold;
@@ -46,30 +45,27 @@ int main() {
     Grid fnewInitial = fnew;
 
     for (int i = 0; i < p.Kpoints; i++) {
-
         f = fInitial;
         fnew = fnewInitial;
         Rold = R;
         K = i * multiplyFactor;
-        dt = std::min((0.9 * (p.dTheta * p.dTheta) / (2 * p.D + (K + maxOmega) * p.dTheta + K * p.dTheta * p.dTheta)), p.Tmax / 100);
+        dt = 0.9 * (p.dTheta * p.dTheta) / (2 * p.D + (K + maxFrequency) * p.dTheta + K * p.dTheta * p.dTheta);
         steps = static_cast<int>(p.Tmax / dt) + 1;
         asymptotic = 0;
-
         for (int t = 0; t < steps; t++) {
-           
+
             // Compute the solution at each time step
-            finiteDifference(f, fnew, g, p.thetaPoints, p.dTheta, p.omegaPoints, p.dOmega, p.minimumFrequency, p.maximumFrequency, dt, p.D, K);
+            finiteDifference(f, fnew, g, p.thetaPoints, p.dTheta, p.frequencyPoints, p.dFrequency, p.minimumFrequency,  dt, p.D, K);
             std::swap(f, fnew); 
-            OrderParameter ordRnew =  computeR(f, g, p.thetaPoints, p.omegaPoints, p.dTheta, p.dOmega); 
+            OrderParameter ordRnew =  computeR(f, g, p.thetaPoints, p.frequencyPoints, p.dTheta, p.dFrequency); 
             Rnew = ordRnew.R;
 
             // Check if the order parameter has reached an asymptotic value, in which case we can stop the simulation and save the result
-            if (t < 0 || t == steps - 1) { // We only check for asymptotic behavior in the second half of the simulation to give the system some time to evolve
-            //if (t > steps / 2) {
-                if (std::abs(Rnew - Rold) < 0.0001) { asymptotic ++; }
+            if (t > steps / 2) {
+                if (std::abs(Rnew - Rold) < 0.001) { asymptotic ++; }
                 else { asymptotic = 0; }
-                if (asymptotic == 100) { 
-                    fwrite(&Rnew, sizeof(double), 1, file);   
+                if (asymptotic == steps / 4) { 
+                    fwrite(&Rnew, sizeof(double), 1, file); 
                     break; 
                 }  
                 else if (t == steps - 1) { 

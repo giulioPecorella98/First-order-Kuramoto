@@ -75,10 +75,10 @@ def densityEvolution():
 
     rho = rho.reshape((timePoints, thetaPoints, frequencyPoints))
     dt = finalTime / (timePoints - 1)
-
+  
     # Plotting the time-lapse evolution of the density 
     print("Plotting the evolution of the density...")
-    vmax = np.max(rho)
+    vmax = np.max(rho)  
     fig, ax = plt.subplots()
     im = ax.imshow(rho[0, :, :].T,
                extent = [0, 2*np.pi, minimumFrequency, maximumFrequency],

@@ -1,4 +1,4 @@
-// Function to set the initial conditions of the simulation.
+// Function to set the initial distribution of the simulation
 #include "initial_conditions.h"
 
 void initialConditions(Grid& f, Frequency& g, 
@@ -65,6 +65,7 @@ void initialConditions(Grid& f, Frequency& g,
     for (int j = 0; j < frequencyPoints; j++) { g[j] /= (sum * dFrequency); }
 
 
+
     std::cout << "Please choose one of the following initial conditions for the density:" << std::endl;
     std::cout << "1. n-modal Gaussian-type in phase, uniform in natural frequency" << std::endl;
     std::cout << "2. uniform distribution in phase and natural frequency" << std::endl;
@@ -115,8 +116,8 @@ void initialConditions(Grid& f, Frequency& g,
                 for (int i = 0; i < thetaPoints; i++) {
                     double theta = i * dTheta;
                     double diff = theta - mean;
-                    if (diff > PI) {diff -= 2*PI;}
-                    else if (diff < -PI) {diff += 2*PI;}
+                    if (diff > PI) {diff -= 2 * PI;}
+                    else if (diff < -PI) {diff += 2 * PI;}
                     for (int j = 0; j < frequencyPoints; j++) {
                         f[i][j] += amplitude * std::exp(-diff * diff / (2 * variance));
                     }    
@@ -141,12 +142,10 @@ void initialConditions(Grid& f, Frequency& g,
         default:
             break;
     }
-    // Normalization for every natural frequency Omega
-    sum = 0;
+    // Normalization for every natural frequency
     for (int j = 0; j < frequencyPoints; j++) {
+        sum = 0;
         for (int i = 0; i < thetaPoints; i++) { sum += f[i][j]; }
         for (int i = 0; i < thetaPoints; i++) { f[i][j] /= (sum * dTheta); }
-        sum = 0;
     }
 }
-

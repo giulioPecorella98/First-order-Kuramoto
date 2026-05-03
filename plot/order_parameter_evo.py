@@ -8,15 +8,17 @@ import os
 
 def orderParameterEvolution():
 
-    simulation =  input("Which simulation do you wish to load? (type 's' to see available simulations) ")
+    simulation =  input("Which simulation do you wish to load? (type 's' to see available simulations, 'q' to quit) ")
     while simulation == 's':
     
         print(f"The available simulations are: {', '.join(os.listdir(Path('save/order_parameter')))}")
         simulation = input("Which simulation do you wish to load? ")
     
+    if simulation == 'q':
+            return
+    
     continueAnalysis = True
     while continueAnalysis:
-
         try:
             with open(Path("save/order_parameter") / simulation, "rb") as file:
                 
@@ -25,7 +27,6 @@ def orderParameterEvolution():
                 K = np.linspace(0, Kmax, KPoints)
                 r = np.fromfile(file, dtype = np.float64, count = KPoints)
                 continueAnalysis = False
-
         except Exception as e:
             
             print(f"An error occurred while reading the file: {e}")

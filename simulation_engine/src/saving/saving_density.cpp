@@ -1,8 +1,8 @@
+// Function for saving the result of the density simulation in a binary file
 #include "saving_density.h"
 
 std::string save() {
-    // Enter the name of the binary file where the result will be saved
-    std::cout << "Enter the name of the file where you want to save the result (type 's' to see saved files, 'q' to quit): ";
+    std::cout << "Enter the name of the file where you want to save the result (type 's' to see saved files, 'q' to quit to main menu): ";
     std::string filename;
     std::cin >> filename;
     while (filename == "s") {
@@ -23,7 +23,7 @@ std::string save() {
     // Check if the file already exists and ask for confirmation to overwrite
     std::filesystem::path saving = std::filesystem::path(PROJECT_ROOT) / "save" / "density" / filename;
     if (std::filesystem::exists(saving)) {
-        std::cout << "Warning: file name '" << filename << "' already exists. Do you want to overwrite it? (y/n): " << std::endl;
+        std::cout << "Warning: file name '" << filename << "' already exists. Do you want to overwrite it? (y/n): ";
         char choice;
         std::cin >> choice;
         if ((choice != 'y') && (choice != 'Y')) {

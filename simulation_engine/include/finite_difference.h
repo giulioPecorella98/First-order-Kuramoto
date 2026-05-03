@@ -1,9 +1,8 @@
 #pragma once
 #include <vector>
-using Grid = std::vector<std::vector<double>>;
-using Frequency = std::vector<double>;
+#include "order_parameter.h"
 
 void finiteDifference(Grid& f, Grid& fnew, Frequency& g, 
                       int thetaPoints, double dTheta, 
-                      int frequencyPoints, double dFrequency, double minimumFrequency, double maximumFrequency, 
+                      int frequencyPoints, double dFrequency, double minimumFrequency,
                       double dt, double D, double K);

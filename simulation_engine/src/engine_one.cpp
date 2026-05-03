@@ -20,9 +20,9 @@ int main() {
         return 1; 
     } 
 
-    Parameters p = loadParameters();                                        // Load parameters
-    Grid f(p.thetaPoints, std::vector<double>(p.frequencyPoints, 0.0));         // Solution vector
-    Grid fnew(p.thetaPoints,  std::vector<double>(p.frequencyPoints, 0.0));     // Auxiliary vector
+    Parameters p = loadParameters();                                            // Load parameters
+    Grid f(p.thetaPoints, Frequency(p.frequencyPoints, 0.0));         // Solution vector
+    Grid fnew(p.thetaPoints,  Frequency(p.frequencyPoints, 0.0));     // Auxiliary vector
     Frequency g(p.frequencyPoints, 0.0);                                        // Vector of natural frequencies
 
     fwrite(&p.thetaPoints, sizeof(int), 1, file);
@@ -36,8 +36,8 @@ int main() {
     // Apply the initial conditions
     initialConditions(f, g, p.thetaPoints, p.dTheta, p.frequencyPoints, p.dFrequency, p.minimumFrequency, p.maximumFrequency);
     fwrite(g.data(), sizeof(double), p.frequencyPoints, file);
-    for (const auto& row : f) {                                         // phase
-        fwrite(row.data(), sizeof(double), p.frequencyPoints, file);    // frequency
+    for (const auto& phase : f) {                                       
+        fwrite(phase.data(), sizeof(double), p.frequencyPoints, file);    
     }
     OrderParameter ordR =  computeR(f, g, p.thetaPoints, p.frequencyPoints, p.dTheta, p.dFrequency); 
     fwrite(&ordR.R, sizeof(double), 1, file);
@@ -47,22 +47,22 @@ int main() {
     for (int t = 0; t < p.steps; t++) {
 
         // Compute the solution at each time step
-        finiteDifference(f, fnew, g, p.thetaPoints, p.dTheta, p.frequencyPoints, p.dFrequency, p.minimumFrequency, p.maximumFrequency, p.dt, p.D, p.K);
+        finiteDifference(f, fnew, g, p.thetaPoints, p.dTheta, p.frequencyPoints, p.dFrequency, p.minimumFrequency, p.dt, p.D, p.K);
         std::swap(f, fnew); 
         
         // Save the solution a the specified frame intervals
         updateTime += p.dt;
         if (static_cast<int>(updateTime / p.frameInterval) >= 1) {
-            for (const auto& row : f) {
-                fwrite(row.data(), sizeof(double), p.frequencyPoints, file);
+            for (const auto& phase : f) {
+                fwrite(phase.data(), sizeof(double), p.frequencyPoints, file);
             }
             OrderParameter ordR =  computeR(f, g, p.thetaPoints, p.frequencyPoints, p.dTheta, p.dFrequency);
             fwrite(&ordR.R, sizeof(double), 1, file);
             updateTime = 0.0;
         }
         else if (t == p.steps - 1) {
-            for (const auto& row : f) {                                     
-                fwrite(row.data(), sizeof(double), p.frequencyPoints, file); 
+            for (const auto& phase : f) {                                     
+                fwrite(phase.data(), sizeof(double), p.frequencyPoints, file); 
             }
             OrderParameter ordR =  computeR(f, g, p.thetaPoints, p.frequencyPoints, p.dTheta, p.dFrequency); 
             fwrite(&ordR.R, sizeof(double), 1, file);

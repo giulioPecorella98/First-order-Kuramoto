@@ -1,8 +1,8 @@
 #pragma once
 #include <cmath>
 #include <vector>
-using Grid = std::vector<std::vector<double>>;
 using Frequency = std::vector<double>;
+using Grid = std::vector<Frequency>;
 
 struct OrderParameter {
     double Rcos;

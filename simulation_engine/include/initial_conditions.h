@@ -2,8 +2,8 @@
 #include <vector>
 #include <cmath>
 #include <iostream>
-using Grid = std::vector<std::vector<double>>;
 using Frequency = std::vector<double>;
+using Grid = std::vector<Frequency>;
 
 void initialConditions(Grid& f, Frequency& g, 
                        int thetaPoints, double dTheta, 
