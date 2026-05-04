@@ -8,10 +8,11 @@ import os
 
 def orderParameterEvolution():
 
-    simulation =  input("Which simulation do you wish to load? (type 's' to see available simulations, 'q' to quit) ")
+    simulation =  input("Which simulation do you wish to load? (type 's' to see available simulations, 'q' to quit to main menu) ")
+    path = Path("save/order_parameter")
+    path.mkdir(parents=True, exist_ok=True)
     while simulation == 's':
-    
-        print(f"The available simulations are: {', '.join(os.listdir(Path('save/order_parameter')))}")
+        print(f"The available simulations are: {', '.join(os.listdir(path))}")
         simulation = input("Which simulation do you wish to load? ")
     
     if simulation == 'q':
@@ -20,23 +21,21 @@ def orderParameterEvolution():
     continueAnalysis = True
     while continueAnalysis:
         try:
-            with open(Path("save/order_parameter") / simulation, "rb") as file:
-                
+            with open(path / simulation, "rb") as file:            
                 KPoints = struct.unpack('i', file.read(4))[0]
                 Kmax = struct.unpack('d', file.read(8))[0]
                 K = np.linspace(0, Kmax, KPoints)
                 r = np.fromfile(file, dtype = np.float64, count = KPoints)
                 continueAnalysis = False
         except Exception as e:
-            
             print(f"An error occurred while reading the file: {e}")
-            print(f"The available simulations are: {', '.join(os.listdir(Path('save/order_parameter')))}")
+            print(f"The available simulations are: {', '.join(os.listdir(path))}")
             simulation = input("Try another file name: ")
 
     print("Plotting the order parameter evolution")
     plt.figure()
     plt.plot(K, r)
-    plt.title(f"Order parameter evolution for {simulation}")
+    plt.title(f"Order parameter evolution")
     plt.xlim(0, K[-1])
     plt.ylim(0, 1.1)
     plt.xlabel(r"$K$")

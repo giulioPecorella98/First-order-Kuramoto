@@ -33,19 +33,23 @@ def onScroll(event):
 def densityEvolution():
 
     simulation =  input("Which simulation do you wish to load? (type 's' to see available simulations, 'q' to quit) ")
+    path = Path("save/density")
+    path.mkdir(parents=True, exist_ok=True)
+
     while simulation == 's':
-        print(f"The available simulations are: {', '.join(os.listdir(Path('save/density')))}")
+        print(f"The available simulations are: {', '.join(os.listdir(path))}")
         simulation = input("Which simulation do you wish to load? ")
+    
     if simulation == 'q':
         return
     
     continueAnalysis = True
     rho = []
     r = []
+    
     while continueAnalysis:
         try:
-            with open(Path("save/density") / simulation, "rb") as f:
-    
+            with open(path / simulation, "rb") as f:
                 thetaPoints = int(struct.unpack('i', f.read(4))[0])
                 frequencyPoints = int(struct.unpack('i', f.read(4))[0])
                 minimumFrequency = struct.unpack('d', f.read(8))[0]
@@ -55,30 +59,27 @@ def densityEvolution():
                 K = struct.unpack('d', f.read(8))[0]
                 g = np.fromfile(f, dtype = np.float64, count = frequencyPoints)
                 size = thetaPoints * frequencyPoints
-    
                 while True:
                     data = f.read(size * 8)  
                     if len(data) != size * 8:
                         break
                     rho.append(np.frombuffer(data, dtype = np.float64))
                     r.append(struct.unpack('d', f.read(8))[0])
-  
                 rho = np.array(rho)
                 r = np.array(r)
                 timePoints = np.size(r)
                 continueAnalysis = False
-  
         except Exception as e:
-            print(f"An error occurred while reading the file: {e}")
-            print(f"The available simulations are: {', '.join(os.listdir(Path('save/density')))}")
-            simulation = input("Try another file name: ")
+            print(f"An error occurred while reading the file: {e}. Returning to the main menu...")
+            return  
 
     rho = rho.reshape((timePoints, thetaPoints, frequencyPoints))
     dt = finalTime / (timePoints - 1)
   
-    # Plotting the time-lapse evolution of the density 
+    # Plotting the evolution of the density 
     print("Plotting the evolution of the density...")
-    vmax = np.max(rho)  
+    vmax = np.max(rho)
+    vmin = np.min(np.min(rho),0)  
     fig, ax = plt.subplots()
     im = ax.imshow(rho[0, :, :].T,
                extent = [0, 2*np.pi, minimumFrequency, maximumFrequency],
@@ -102,7 +103,7 @@ def densityEvolution():
     fig0 = plt.figure()
     ax0 = fig0.add_subplot(111, projection = '3d')
     ax0.set_box_aspect([1, 1, 0.7])
-    ax0.plot_surface(Theta, Omega, rho[0, :, :].T, cmap = 'viridis', vmin = 0, vmax = vmax)
+    ax0.plot_surface(Theta, Omega, rho[0, :, :].T, cmap = 'viridis', vmin = vmin, vmax = vmax)
     ax0.set_title("Initial density at t = 0")
     ax0.set_xlabel(r"$\theta$")
     ax0.set_ylabel(r"$\Omega$")
@@ -110,19 +111,18 @@ def densityEvolution():
     fig1 = plt.figure()
     ax1 = fig1.add_subplot(111, projection = '3d')
     ax1.set_box_aspect([1, 1, 0.7])
-    ax1.plot_surface(Theta, Omega, rho[-1, :, :].T, cmap = 'viridis', vmin = 0, vmax = vmax)
+    ax1.plot_surface(Theta, Omega, rho[-1, :, :].T, cmap = 'viridis', vmin = vmin, vmax = vmax)
     ax1.set_title(f"Final density at t = {finalTime:.2f}")
     ax1.set_xlabel(r"$\theta$")
     ax1.set_ylabel(r"$\Omega$")
     ax1.set_zlabel(r"$\rho$")
     mappable = plt.cm.ScalarMappable(cmap = 'viridis')
     mappable.set_array(rho)
-    mappable.set_clim(0, vmax)
+    mappable.set_clim(vmin, vmax)
     fig0.colorbar(mappable, ax = ax0, shrink = 0.6, pad = 0.1)
     fig1.colorbar(mappable, ax = ax1, shrink = 0.6, pad = 0.1)
-    ax0.set_zlim(0, vmax)
-    ax1.set_zlim(0, vmax)
-
+    ax0.set_zlim(vmin, vmax)
+    ax1.set_zlim(vmin, vmax)
     fig0.canvas.mpl_connect('button_press_event', onButtonPress)
     fig0.canvas.mpl_connect('button_release_event', onButtonRelease)
     fig1.canvas.mpl_connect('button_press_event', onButtonPress)
@@ -147,7 +147,7 @@ def densityEvolution():
     plt.title("Natural frequency distribution")
     plt.xlabel(r"$\Omega$")
     plt.ylabel(r"$g(\Omega)$")
-    plt.xlim(minimumFrequency, maximumFrequency)
+    plt.xlim(minimumFrequency * 1.1, maximumFrequency * 1.1)
     plt.ylim(0, np.max(g) * 1.1)
     plt.show(block = False)
 

@@ -11,7 +11,7 @@ def main():
     print("\033[92m    Here you have the opportunity to simulate the dynamics of the first order Kuramoto")
     print("    model, choosing the initial distribution of the oscillators, the natural frequency")
     print("    distribution, the noise level D, and the coupling constant K.")
-    print("\033[91m------------------------------------------------------------------------------------------")
+    print("------------------------------------------------------------------------------------------")
     print("\n\033[0mWhat do you want to do?")
     print("1) Run a new simulation")
     print("2) Test order parameter dependence on K")
@@ -47,7 +47,7 @@ def main():
         print("4) Exit")
         userInput = input("Please type your choice: ")
 
-    print("Thank you for using the first order mean field Kuramoto model simulator! See you next time!")
+    print("\033[91m\nThank you for using the first order mean field Kuramoto model simulator! See you next time!")
 
 if __name__ == "__main__":
     main()
