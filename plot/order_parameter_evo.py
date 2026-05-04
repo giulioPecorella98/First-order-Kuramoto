@@ -28,9 +28,8 @@ def orderParameterEvolution():
                 r = np.fromfile(file, dtype = np.float64, count = KPoints)
                 continueAnalysis = False
         except Exception as e:
-            print(f"An error occurred while reading the file: {e}")
-            print(f"The available simulations are: {', '.join(os.listdir(path))}")
-            simulation = input("Try another file name: ")
+            print(f"An error occurred while reading the file: {e}. Returning to the main menu...")
+            return  
 
     print("Plotting the order parameter evolution")
     plt.figure()
