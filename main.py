@@ -5,14 +5,14 @@ from plot import plotting
 
 
 def main():
-    print("==========================================================================================")
+    print("\033[91m==========================================================================================")
     print("|             Welcome to the first order mean field Kuramoto model simulator!            |")
     print("==========================================================================================")
-    print("    Here you have the opportunity to simulate the dynamics of the first order Kuramoto")
+    print("\033[92m    Here you have the opportunity to simulate the dynamics of the first order Kuramoto")
     print("    model, choosing the initial distribution of the oscillators, the natural frequency")
     print("    distribution, the noise level D, and the coupling constant K.")
-    print("------------------------------------------------------------------------------------------")
-    print("\nWhat do you want to do?")
+    print("\033[91m------------------------------------------------------------------------------------------")
+    print("\n\033[0mWhat do you want to do?")
     print("1) Run a new simulation")
     print("2) Test order parameter dependence on K")
     print("3) Load a saved simulation")
