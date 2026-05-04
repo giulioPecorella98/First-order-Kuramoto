@@ -2,7 +2,7 @@
 #include <cmath>
 #include <vector>
 using Frequency = std::vector<double>;
-using Grid = std::vector<Frequency>;
+using Density = std::vector<Frequency>;
 
 struct OrderParameter {
     double Rcos;
@@ -10,6 +10,6 @@ struct OrderParameter {
     double R;
 };
 
-OrderParameter computeR (Grid& f, Frequency& g,  
+OrderParameter computeR (Density& f, Frequency& g,  
                          int thetaPoints, int frequencyPoints, 
                          double dTheta, double dFrequency); 

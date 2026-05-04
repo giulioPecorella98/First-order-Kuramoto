@@ -1,7 +1,7 @@
 // Function for computing the solution to the mean field Kuramoto PDE with noise level D and coupling strength K.
 #include "finite_difference.h"
 
-void finiteDifference(Grid& f, Grid& fnew, Frequency& g,
+void finiteDifference(Density& f, Density& fnew, Frequency& g,
                       int thetaPoints, double dTheta, 
                       int frequencyPoints, double dFrequency, double minimumFrequency,
                       double dt, double D, double K) {

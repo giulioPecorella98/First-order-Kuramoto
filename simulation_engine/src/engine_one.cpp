@@ -21,8 +21,8 @@ int main() {
     } 
 
     Parameters p = loadParameters();                                            // Load parameters
-    Grid f(p.thetaPoints, Frequency(p.frequencyPoints, 0.0));         // Solution vector
-    Grid fnew(p.thetaPoints,  Frequency(p.frequencyPoints, 0.0));     // Auxiliary vector
+    Density f(p.thetaPoints, Frequency(p.frequencyPoints, 0.0));                // Solution vector
+    Density fnew(p.thetaPoints,  Frequency(p.frequencyPoints, 0.0));            // Auxiliary vector
     Frequency g(p.frequencyPoints, 0.0);                                        // Vector of natural frequencies
 
     fwrite(&p.thetaPoints, sizeof(int), 1, file);

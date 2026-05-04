@@ -24,8 +24,8 @@ int main() {
     fwrite(&p.Kpoints, sizeof(int), 1, file);
     fwrite(&p.Kmax, sizeof(double), 1, file);
 
-    Grid f(p.thetaPoints, Frequency(p.frequencyPoints, 0.0));         // Solution vector
-    Grid fnew(p.thetaPoints,  Frequency(p.frequencyPoints, 0.0));     // Auxiliary vector
+    Density f(p.thetaPoints, Frequency(p.frequencyPoints, 0.0));         // Solution vector
+    Density fnew(p.thetaPoints,  Frequency(p.frequencyPoints, 0.0));     // Auxiliary vector
     Frequency g(p.frequencyPoints, 0.0);                                        // Vector of natural frequencies
 
     // Apply the initial conditions and run the simulation for different values of K, saving the order parameter R for each value of K in the binary file
@@ -41,8 +41,8 @@ int main() {
     int asymptotic;
     double K;
     double dt; 
-    Grid fInitial = f;
-    Grid fnewInitial = fnew;
+    Density fInitial = f;
+    Density fnewInitial = fnew;
 
     for (int i = 0; i < p.Kpoints; i++) {
         f = fInitial;

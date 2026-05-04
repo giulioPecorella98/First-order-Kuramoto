@@ -1,7 +1,7 @@
-// Function to set the initial distribution of the simulation
+// Function to set the initial distributions of the simulation
 #include "initial_conditions.h"
 
-void initialConditions(Grid& f, Frequency& g, 
+void initialConditions(Density& f, Frequency& g, 
                        int thetaPoints, double dTheta, 
                        int frequencyPoints, double dFrequency, double minimumFrequency, double maximumFrequency) {   
     
@@ -63,7 +63,6 @@ void initialConditions(Grid& f, Frequency& g,
     // Normalization of g
     for (int j = 0; j < frequencyPoints; j++) { sum += g[j]; }
     for (int j = 0; j < frequencyPoints; j++) { g[j] /= (sum * dFrequency); }
-
 
 
     std::cout << "Please choose one of the following initial conditions for the density:" << std::endl;

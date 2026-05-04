@@ -47,7 +47,9 @@ Parameters loadParameters() {
         std::cin.clear();
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
         std::cin >> dTheta;
-    }     
+    }   
+    int thetaPoints = static_cast<int>((2 * PI / dTheta) + 1);
+    dTheta = 2 * PI / (thetaPoints - 1);  
     double minimumFrequency;
     std::cout << "5) Enter the minimum natural frequency of the oscillators: ";
     std::cin >> minimumFrequency; 
@@ -58,25 +60,36 @@ Parameters loadParameters() {
         std::cin >> minimumFrequency;
     }      
     double maximumFrequency;
-    std::cout << "6) Enter the maximum natural frequency of the oscillators (for identical oscillators consider adding a small value to minimum frequency): ";
+    std::cout << "6) Enter the maximum natural frequency of the oscillators: ";
     std::cin >> maximumFrequency; 
-    while (std::cin.fail() || (maximumFrequency <= minimumFrequency)) {
-        std::cout << "Invalid choice. Remember that the minimum frequency is at most equal to the maximum frequency up to a small value: ";
+    while (std::cin.fail() || (maximumFrequency < minimumFrequency)) {
+        std::cout << "Invalid choice. Remember that the minimum frequency is at most equal to the maximum frequency: ";
         std::cin.clear();
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
         std::cin >> maximumFrequency;
     }
+    int frequencyPoints;
     double dFrequency;
-    std::cout << "7) Enter the natural frequency discretization: ";
-    std::cin >> dFrequency; 
-    while ((dFrequency <= 0) || (dFrequency > (maximumFrequency - minimumFrequency)) || (std::cin.fail())) {
-        std::cout << "Invalid choice. The natural frequency discretization must be a positive number: ";
-        std::cin.clear();
-        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-        std::cin >> dFrequency;
+    if (maximumFrequency == minimumFrequency) {
+        dFrequency = 1e-6;
+        std::cout << "You choose identical oscillators. For visualization purposes, the value of " << dFrequency << " will be added to the maximum frequency." << std::endl;
+        maximumFrequency += dFrequency;
+        frequencyPoints = 2;
     }
+    else {
+        std::cout << "Enter the natural frequency discretization: ";
+        std::cin >> dFrequency; 
+        while ((dFrequency <= 0) || (dFrequency > (maximumFrequency - minimumFrequency)) || (std::cin.fail())) {
+            std::cout << "Invalid choice. The natural frequency discretization must be a positive number: ";
+            std::cin.clear();
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            std::cin >> dFrequency;
+        }
+        frequencyPoints = static_cast<int>(((maximumFrequency - minimumFrequency) / dFrequency) + 1);
+    }
+    double omegaMax = std::max(std::abs(minimumFrequency), std::abs(maximumFrequency));
     double framePerSeconds;
-    std::cout << "8) Enter the number of frames per seconds: ";
+    std::cout << "7) Enter the number of frames per seconds: ";
     std::cin >> framePerSeconds;  
     while ((framePerSeconds <= 0) || (std::cin.fail()) || (framePerSeconds < (1 / T))) {
         std::cout << "Invalid choice. Try again: " << ": ";
@@ -84,12 +97,6 @@ Parameters loadParameters() {
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
         std::cin >> framePerSeconds;
     }
-
-    int thetaPoints = static_cast<int>((2 * PI / dTheta) + 1);
-    dTheta = 2 * PI / (thetaPoints - 1);
-    int frequencyPoints = static_cast<int>(((maximumFrequency - minimumFrequency) / dFrequency) + 1);
-    dFrequency = (maximumFrequency - minimumFrequency) / (frequencyPoints - 1);
-    double omegaMax = std::max(std::abs(minimumFrequency), std::abs(maximumFrequency));
     //Stability condition for the finite difference scheme
     double dtMax = 0.9 * (dTheta * dTheta) / (2 * D + (K + omegaMax) * dTheta + K * dTheta * dTheta);  
     int steps = static_cast<int>(T / dtMax) + 1;

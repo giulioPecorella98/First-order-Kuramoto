@@ -3,8 +3,8 @@
 #include <cmath>
 #include <iostream>
 using Frequency = std::vector<double>;
-using Grid = std::vector<Frequency>;
+using Density = std::vector<Frequency>;
 
-void initialConditions(Grid& f, Frequency& g, 
+void initialConditions(Density& f, Frequency& g, 
                        int thetaPoints, double dTheta, 
                        int frequencyPoints, double dFrequency, double minimumFrequency, double maximumFrequency);

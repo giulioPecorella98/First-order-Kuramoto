@@ -2,6 +2,7 @@
 #include "saving_density.h"
 
 std::string save() {
+
     std::cout << "Enter the name of the file where you want to save the result (type 's' to see saved files, 'q' to quit to main menu): ";
     std::string filename;
     std::cin >> filename;
@@ -16,7 +17,7 @@ std::string save() {
                 std::cout << " - " << entry.path().filename().string() << std::endl;
             }
         }
-        std::cout << "Enter the name of the file where you want to save the result (type 's' to see saved files, 'q' to quit): ";
+        std::cout << "Enter the name of the file where you want to save the result (type 's' to see saved files, 'q' to quit to main menu): ";
         std::cin >> filename;
     }
     if (filename == "q") { return "quit"; }
@@ -30,5 +31,6 @@ std::string save() {
             return save(); // Ask for the filename again
         }
     }
+
     return filename;
 }

@@ -1,6 +1,6 @@
 #include "order_parameter.h"
 
-OrderParameter computeR (Grid& f, Frequency& g, 
+OrderParameter computeR (Density& f, Frequency& g, 
                          int thetaPoints, int frequencyPoints, 
                          double dTheta, double dFrequency) {
     

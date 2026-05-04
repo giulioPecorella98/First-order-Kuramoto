@@ -32,7 +32,7 @@ def onScroll(event):
 
 def densityEvolution():
 
-    simulation =  input("Which simulation do you wish to load? (type 's' to see available simulations, 'q' to quit) ")
+    simulation =  input("Which simulation do you wish to load? (type 's' to see available simulations, 'q' to quit to main menu) ")
     path = Path("save/density")
     path.mkdir(parents=True, exist_ok=True)
 
@@ -141,15 +141,18 @@ def densityEvolution():
     plt.ylabel(r"$r(t)$")
     plt.show(block = False)
 
-    print("Plotting the natural frequency distribution")
-    plt.figure()
-    plt.plot(omega, g)
-    plt.title("Natural frequency distribution")
-    plt.xlabel(r"$\Omega$")
-    plt.ylabel(r"$g(\Omega)$")
-    plt.xlim(minimumFrequency * 1.1, maximumFrequency * 1.1)
-    plt.ylim(0, np.max(g) * 1.1)
-    plt.show(block = False)
+    if frequencyPoints != 2:
+        print("Plotting the natural frequency distribution")
+        plt.figure()
+        plt.plot(omega, g)
+        plt.title("Natural frequency distribution")
+        plt.xlabel(r"$\Omega$")
+        plt.ylabel(r"$g(\Omega)$")
+        plt.ylim(0, np.max(g) * 1.1)
+        plt.show(block = False) 
+    
+    else:
+        print("Identical oscillators: the natural frequency distribution is a delta function centered at " + f"{minimumFrequency:.2f}.")
 
     input("Press Enter to close the plot...")
     plt.close('all')
