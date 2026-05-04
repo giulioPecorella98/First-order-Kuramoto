@@ -18,6 +18,8 @@ The equation describes the evolution of the density function, with:
 - g(Ω) : natural frequency distribution
 - K : coupling strength  
 
+For more details about Kuramoto models see the introduction of [https://www.sciencedirect.com/science/article/pii/S0022247X24007595].
+
 ##  Description
 
 The simulator allows the user to:
@@ -42,6 +44,8 @@ initial condition, natural frequency distribution), and simulate the evolution o
     </td>
   </tr>
 </table>
+
+Warning: the numerical scheme is an explicit finite difference method. In order to have a stable method, the time discretization scales as the square of the phase discretization and the inverse of the noise level and the coupling strength. Suggested value for noise D and coupling K not greater than 100.
 
 ## Phase synchronization dependence on K
 
@@ -108,4 +112,4 @@ Run the python script main.py.
 
 ## Notes
 
-This is a numerical implementation for research/educational purposes.
+This is a numerical implementation for research/educational purposes. 
