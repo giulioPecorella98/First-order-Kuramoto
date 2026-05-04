@@ -3,8 +3,7 @@ Function to load the parameters of the simulation by asking the user to input th
 */
 #include "parameters_two.h"
 #include <iostream>
-#include <limits>
-#include <algorithm>
+#include <limits>       
 
 Parameters loadParameters() {
     
@@ -86,8 +85,7 @@ Parameters loadParameters() {
     int thetaPoints = static_cast<int>((2 * PI / dTheta) + 1);
     dTheta = 2 * PI / (thetaPoints - 1);
     int frequencyPoints = static_cast<int>(((maximumFrequency - minimumFrequency) / dFrequency) + 1);
-    dFrequency = (maximumFrequency - minimumFrequency) / (frequencyPoints - 1);
-    double frequencyMax = std::max(std::abs(minimumFrequency), std::abs(maximumFrequency));
+    dFrequency = (maximumFrequency - minimumFrequency) / (frequencyPoints - 1);     
     
     return {Kmax, Kpoints, D, dTheta, thetaPoints, minimumFrequency, maximumFrequency, dFrequency, frequencyPoints, Tmax};
 }
