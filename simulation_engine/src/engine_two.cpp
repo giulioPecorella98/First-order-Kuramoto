@@ -26,7 +26,7 @@ int main() {
 
     Density f(p.thetaPoints, Frequency(p.frequencyPoints, 0.0));         // Solution vector
     Density fnew(p.thetaPoints,  Frequency(p.frequencyPoints, 0.0));     // Auxiliary vector
-    Frequency g(p.frequencyPoints, 0.0);                                        // Vector of natural frequencies
+    Frequency g(p.frequencyPoints, 0.0);                                 // Vector of natural frequencies
 
     // Apply the initial conditions and run the simulation for different values of K, saving the order parameter R for each value of K in the binary file
     initialConditions(f, g, p.thetaPoints, p.dTheta, p.frequencyPoints, p.dFrequency, p.minimumFrequency, p.maximumFrequency); 
@@ -61,18 +61,16 @@ int main() {
             Rnew = ordRnew.R;
 
             // Check if the order parameter has reached an asymptotic value, in which case we can stop the simulation and save the result
-            if (t > steps / 2) {
-                if (std::abs(Rnew - Rold) < 0.001) { asymptotic ++; }
-                else { asymptotic = 0; }
-                if (asymptotic == steps / 4) { 
-                    fwrite(&Rnew, sizeof(double), 1, file); 
-                    break; 
-                }  
-                else if (t == steps - 1) { 
-                    fwrite(&Rnew, sizeof(double), 1, file); 
-                    std::cout << "\nWarning: the order parameter did not reach an asymptotic value for K = " << K << " ." << std::endl;
-                    std::cout << "Consider increasing the maximum simulation time." << std::endl;
-                }
+            if (std::abs(Rnew - Rold) < 0.001) { asymptotic ++; }
+            else { asymptotic = 0; }
+            if (asymptotic == static_cast<int>(steps / 4)) { 
+                fwrite(&Rnew, sizeof(double), 1, file); 
+                break; 
+            }  
+            else if (t == steps - 1) { 
+                fwrite(&Rnew, sizeof(double), 1, file); 
+                std::cout << "\nWarning: the order parameter did not reach an asymptotic value for K = " << K << " ." << std::endl;
+                std::cout << "Consider increasing the maximum simulation time." << std::endl;
             }
             std::swap(Rold, Rnew); 
         }
@@ -87,6 +85,9 @@ int main() {
     }
     std::cout << "\rComputing: [" << std::string(100, '=') << "] 100%" << std::endl;
     std::cout << "Simulation completed successfully." << std::endl;
+    fwrite(&p.minimumFrequency, sizeof(double), 1, file);
+    fwrite(&p.maximumFrequency, sizeof(double), 1, file);
+    fwrite(g.data(), sizeof(double), p.frequencyPoints, file);
     fclose(file);
     std::cout << "Result saved successfully in " << fullpath.generic_string() << "." << std::endl;
 

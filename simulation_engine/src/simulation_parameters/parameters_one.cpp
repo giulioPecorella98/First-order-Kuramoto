@@ -71,10 +71,9 @@ Parameters loadParameters() {
     int frequencyPoints;
     double dFrequency;
     if (maximumFrequency == minimumFrequency) {
-        dFrequency = 1e-6;
-        std::cout << "You choose identical oscillators. For visualization purposes, the value of " << dFrequency << " will be added to the maximum frequency." << std::endl;
-        maximumFrequency += dFrequency;
-        frequencyPoints = 2;
+        dFrequency = 1.0;
+        std::cout << "You choose identical oscillators." << std::endl;
+        frequencyPoints = 1;
     }
     else {
         std::cout << "Enter the natural frequency discretization: ";
@@ -92,7 +91,7 @@ Parameters loadParameters() {
     std::cout << "7) Enter the number of frames per seconds: ";
     std::cin >> framePerSeconds;  
     while ((framePerSeconds <= 0) || (std::cin.fail()) || (framePerSeconds < (1 / T))) {
-        std::cout << "Invalid choice. Try again: " << ": ";
+        std::cout << "Invalid choice. Try again: ";
         std::cin.clear();
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
         std::cin >> framePerSeconds;

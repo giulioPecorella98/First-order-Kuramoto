@@ -68,10 +68,9 @@ Parameters loadParameters() {
     int frequencyPoints;
     double dFrequency;
     if (maximumFrequency == minimumFrequency) {
-        dFrequency = 1e-6;
-        std::cout << "You choose identical oscillators. For visualization purposes, the value of " << dFrequency << " will be added to the maximum frequency." << std::endl;
-        maximumFrequency += dFrequency;
-        frequencyPoints = 2;
+        dFrequency = 1;
+        std::cout << "You choose identical oscillators." << std::endl;
+        frequencyPoints = 1;
     }
     else {
         std::cout << "Enter the natural frequency discretization: ";

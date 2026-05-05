@@ -5,10 +5,10 @@ from plot import plotting
 
 
 def main():
-    print("\033[91m==========================================================================================")
+    print("\n\n\033[91m==========================================================================================")
     print("|             Welcome to the first order mean field Kuramoto model simulator!            |")
     print("==========================================================================================")
-    print("\033[92m    Here you have the opportunity to simulate the dynamics of the first order Kuramoto")
+    print("\033[33m    Here you have the opportunity to simulate the dynamics of the first order Kuramoto")
     print("    model, choosing the initial distribution of the oscillators, the natural frequency")
     print("    distribution, the noise level D, and the coupling constant K.")
     print("------------------------------------------------------------------------------------------")
@@ -47,7 +47,7 @@ def main():
         print("4) Exit")
         userInput = input("Please type your choice: ")
 
-    print("\033[91m\nThank you for using the first order mean field Kuramoto model simulator! See you next time!")
+    print("\033[91m\nThank you for using the first order mean field Kuramoto model simulator! See you next time!\n\n")
 
 if __name__ == "__main__":
     main()

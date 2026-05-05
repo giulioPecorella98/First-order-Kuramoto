@@ -10,59 +10,64 @@ void initialConditions(Density& f, Frequency& g,
     double mean, variance, amplitude;
     double sum = 0;
     
-    std::cout << "Please choose one of the following natural frequency initial conditions:" << std::endl;
-    std::cout << "1. Gaussian-type" << std::endl;
-    std::cout << "2. uniform distribution" << std::endl;
-    std::cout << "3. to be implemented" << std::endl; 
-    std::cout << "Enter your choice (1, 2 or 3): ";
-    std::cin >> choice;
-    while ((choice < 1) || (choice > 3) || (static_cast<int>(choice) != choice) || (std::cin.fail())) {
-        std::cout << "Invalid choice. Please enter 1, 2 or 3: ";
-        std::cin.clear();
-        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+    if (frequencyPoints != 1) { 
+        std::cout << "Please choose one of the following natural frequency initial conditions:" << std::endl;
+        std::cout << "1. Gaussian-type" << std::endl;
+        std::cout << "2. uniform distribution" << std::endl;
+        std::cout << "3. to be implemented" << std::endl; 
+        std::cout << "Enter your choice (1, 2 or 3): ";
         std::cin >> choice;
-    }
-    switch (static_cast<int>(choice)) {
-        case 1:
-            std::cout << "Enter the mean of the distribution: ";
-            std::cin >> mean;
-            while ((mean < minimumFrequency) || (mean > maximumFrequency) || (std::cin.fail())) {
-                std::cout << "Invalid choice. The mean must be in the interval [" << minimumFrequency << ", " << maximumFrequency << "]: ";
-                std::cin.clear();
-                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        while ((choice < 1) || (choice > 3) || (static_cast<int>(choice) != choice) || (std::cin.fail())) {
+            std::cout << "Invalid choice. Please enter 1, 2 or 3: ";
+            std::cin.clear();
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            std::cin >> choice;
+        }
+        switch (static_cast<int>(choice)) {
+            case 1:
+                std::cout << "Enter the mean of the distribution: ";
                 std::cin >> mean;
-            }
-            std::cout << "Enter the variance of the distribution: ";
-            std::cin >> variance;
-            while ((variance <= 0) || (std::cin.fail())) {
-                std::cout << "Invalid choice. The variance must be a positive number: ";
-                std::cin.clear();
-                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                while ((mean < minimumFrequency) || (mean > maximumFrequency) || (std::cin.fail())) {
+                    std::cout << "Invalid choice. The mean must be in the interval [" << minimumFrequency << ", " << maximumFrequency << "]: ";
+                    std::cin.clear();
+                    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                    std::cin >> mean;
+                }
+                std::cout << "Enter the variance of the distribution: ";
                 std::cin >> variance;
-            }
-            for (int j = 0; j < frequencyPoints; j++) {
-                double frequency = minimumFrequency + j * dFrequency;
-                double diff = frequency - mean;
-                g[j] = std::exp(- diff * diff / variance);    
-            }
-            break;
-        case 2:
-            for (int j = 0; j < frequencyPoints; j++) {
-                g[j] = 1.0; 
-            }
-            break;
-        case 3:
-            std::cout << "This initial condition is not implemented yet, the uniform distribution will be used instead. " << std::endl;
-            for (int j = 0; j < frequencyPoints; j++) {
-                g[j] = 1.0; 
-            }
-            break;
-        default:
-            break;
+                while ((variance <= 0) || (std::cin.fail())) {
+                    std::cout << "Invalid choice. The variance must be a positive number: ";
+                    std::cin.clear();
+                    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                    std::cin >> variance;
+                }
+                for (int j = 0; j < frequencyPoints; j++) {
+                    double frequency = minimumFrequency + j * dFrequency;
+                    double diff = frequency - mean;
+                    g[j] = std::exp(- diff * diff / variance);    
+                }
+                break;
+            case 2:
+                for (int j = 0; j < frequencyPoints; j++) {
+                    g[j] = 1.0; 
+                }
+                break;
+            case 3:
+                std::cout << "This initial condition is not implemented yet, the uniform distribution will be used instead. " << std::endl;
+                for (int j = 0; j < frequencyPoints; j++) {
+                    g[j] = 1.0; 
+                }
+                break;
+            default:
+                break;
+        }
+        // Normalization of g
+        for (int j = 0; j < frequencyPoints; j++) { sum += g[j]; }
+        for (int j = 0; j < frequencyPoints; j++) { g[j] /= (sum * dFrequency); }
     }
-    // Normalization of g
-    for (int j = 0; j < frequencyPoints; j++) { sum += g[j]; }
-    for (int j = 0; j < frequencyPoints; j++) { g[j] /= (sum * dFrequency); }
+    else {
+        g[0] = 1.0;
+    }
 
 
     std::cout << "Please choose one of the following initial conditions for the density:" << std::endl;
