@@ -90,7 +90,7 @@ mkdir build
 cd build
 ```
 
-On Linux systems:
+On macOS or Linux systems:
 ```bash
 cmake ..
 cmake --build .
