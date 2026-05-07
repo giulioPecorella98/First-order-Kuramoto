@@ -98,9 +98,9 @@ Parameters loadParameters() {
     }
     //Stability condition for the finite difference scheme
     double dtMax = 0.9 * (dTheta * dTheta) / (2 * D + (K + omegaMax) * dTheta + K * dTheta * dTheta);  
-    int steps = static_cast<int>(T / dtMax) + 1;
     double frameInterval = 1.0 / framePerSeconds;
-    double dt = std::min(T /  static_cast<double>(steps - 1), frameInterval);  
+    double dt = std::min(dtMax, frameInterval);  
+    int steps = static_cast<int>(T / dt) + 1;
     
     return {T, D, K, dTheta, thetaPoints, minimumFrequency, maximumFrequency, dFrequency, frequencyPoints, dt, steps, frameInterval};
 }
