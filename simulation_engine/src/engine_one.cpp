@@ -3,7 +3,7 @@
 #include "parameters_one.h"
 #include "order_parameter.h"
 #include "saving_density.h"
-
+#include <ctime>
 
 
 int main() {
@@ -35,6 +35,15 @@ int main() {
 
     // Apply the initial conditions
     initialConditions(f, g, p.thetaPoints, p.dTheta, p.frequencyPoints, p.dFrequency, p.minimumFrequency, p.maximumFrequency);
+    
+    
+    
+    
+    
+    time_t now = time(nullptr);
+    
+    
+    
     fwrite(g.data(), sizeof(double), p.frequencyPoints, file);
     for (const auto& phase : f) {                                       
         fwrite(phase.data(), sizeof(double), p.frequencyPoints, file);    
@@ -80,6 +89,11 @@ int main() {
     std::cout << "Simulation completed successfully." << std::endl;
     fclose(file);
     std::cout << "Result saved successfully in " << fullpath.generic_string() << "." << std::endl;
+
+
+    time_t end = time(nullptr);
+    double elapsed = difftime(end, now);
+    std::cout << "Elapsed time: " << elapsed << " seconds." << std::endl;
 
     return 0;
 }
