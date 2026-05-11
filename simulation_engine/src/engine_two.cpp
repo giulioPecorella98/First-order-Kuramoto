@@ -24,15 +24,16 @@ int main() {
     fwrite(&p.Kpoints, sizeof(int), 1, file);
     fwrite(&p.Kmax, sizeof(double), 1, file);
 
-    Density f(p.thetaPoints, Frequency(p.frequencyPoints, 0.0));         // Solution vector
-    Density fnew(p.thetaPoints,  Frequency(p.frequencyPoints, 0.0));     // Auxiliary vector
-    Frequency g(p.frequencyPoints, 0.0);                                 // Vector of natural frequencies
+    Density f(p.frequencyPoints, std::vector<double>(p.thetaPoints));         // Solution vector
+    Density fnew(p.frequencyPoints,  std::vector<double>(p.thetaPoints));     // Auxiliary vector
+    Frequency g(p.frequencyPoints);                                 // Vector of natural frequencies
 
     // Apply the initial conditions and run the simulation for different values of K, saving the order parameter R for each value of K in the binary file
     initialConditions(f, g, p.thetaPoints, p.dTheta, p.frequencyPoints, p.dFrequency, p.minimumFrequency, p.maximumFrequency); 
-    OrderParameter ordR =  computeR(f, g, p.thetaPoints, p.frequencyPoints, p.dTheta, p.dFrequency);              
+    OrderParameter ordR =  computeR(f, g, p.thetaPoints, p.dTheta, p.frequencyPoints, p.dFrequency);              
     double multiplyFactor = p.Kmax / (p.Kpoints - 1);       
     double maxFrequency = std::max(std::abs(p.minimumFrequency), std::abs(p.maximumFrequency));
+    double alpha;
     double R = ordR.R;
     double Rnew;
     double Rold;
@@ -49,19 +50,20 @@ int main() {
         fnew = fnewInitial;
         Rold = R;
         K = i * multiplyFactor;
-        dt = 0.9 * (p.dTheta * p.dTheta) / (2 * p.D + (K + maxFrequency) * p.dTheta + K * p.dTheta * p.dTheta);
+        alpha = K + maxFrequency + 1;
+        dt = 0.9 * (p.dTheta * p.dTheta) / (2 * p.D + alpha * p.dTheta);
         steps = static_cast<int>(p.Tmax / dt) + 1;
         asymptotic = 0;
         for (int t = 0; t < steps; t++) {
 
             // Compute the solution at each time step
-            finiteDifference(f, fnew, g, p.thetaPoints, p.dTheta, p.frequencyPoints, p.dFrequency, p.minimumFrequency,  dt, p.D, K);
+            finiteDifference(f, fnew, g, p.thetaPoints, p.dTheta, p.frequencyPoints, p.dFrequency, p.minimumFrequency,  dt, p.D, K, alpha);
             std::swap(f, fnew); 
-            OrderParameter ordRnew =  computeR(f, g, p.thetaPoints, p.frequencyPoints, p.dTheta, p.dFrequency); 
+            OrderParameter ordRnew =  computeR(f, g, p.thetaPoints, p.dTheta, p.frequencyPoints, p.dFrequency); 
             Rnew = ordRnew.R;
 
             // Check if the order parameter has reached an asymptotic value, in which case we can stop the simulation and save the result
-            if (std::abs(Rnew - Rold) < 0.001) { asymptotic ++; }
+            if (std::abs(Rnew - Rold) < 0.0001) { asymptotic ++; }
             else { asymptotic = 0; }
             if (asymptotic == static_cast<int>(steps / 4)) { 
                 fwrite(&Rnew, sizeof(double), 1, file); 

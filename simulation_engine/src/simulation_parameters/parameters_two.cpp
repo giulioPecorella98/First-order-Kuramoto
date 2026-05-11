@@ -45,8 +45,8 @@ Parameters loadParameters() {
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
         std::cin >> dTheta;
     }     
-    int thetaPoints = static_cast<int>((2 * PI / dTheta) + 1);
-    dTheta = 2 * PI / (thetaPoints - 1);  
+    int thetaPoints = static_cast<int>(2 * PI / dTheta);
+    dTheta = 2 * PI / thetaPoints;  
     double minimumFrequency;
     std::cout << "5) Enter the minimum natural frequency of the oscillators: ";
     std::cin >> minimumFrequency; 
@@ -92,6 +92,6 @@ Parameters loadParameters() {
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
         std::cin >> Tmax;
     }
-    
+
     return {Kmax, Kpoints, D, dTheta, thetaPoints, minimumFrequency, maximumFrequency, dFrequency, frequencyPoints, Tmax};
 }

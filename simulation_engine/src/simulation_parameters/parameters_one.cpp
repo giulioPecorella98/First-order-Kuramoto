@@ -48,8 +48,8 @@ Parameters loadParameters() {
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
         std::cin >> dTheta;
     }   
-    int thetaPoints = static_cast<int>((2 * PI / dTheta) + 1);
-    dTheta = 2 * PI / (thetaPoints - 1);  
+    int thetaPoints = static_cast<int>((2 * PI / dTheta));
+    dTheta = 2 * PI / (thetaPoints);  
     double minimumFrequency;
     std::cout << "5) Enter the minimum natural frequency of the oscillators: ";
     std::cin >> minimumFrequency; 
@@ -87,6 +87,7 @@ Parameters loadParameters() {
         frequencyPoints = static_cast<int>(((maximumFrequency - minimumFrequency) / dFrequency) + 1);
     }
     double omegaMax = std::max(std::abs(minimumFrequency), std::abs(maximumFrequency));
+    double alpha = K + omegaMax;
     double framePerSeconds;
     std::cout << "7) Enter the number of frames per seconds: ";
     std::cin >> framePerSeconds;  
@@ -97,10 +98,10 @@ Parameters loadParameters() {
         std::cin >> framePerSeconds;
     }
     //Stability condition for the finite difference scheme
-    double dtMax = 0.9 * (dTheta * dTheta) / (2 * D + (K + omegaMax) * dTheta + K * dTheta * dTheta);  
+    double dtMax = 0.9 * (dTheta * dTheta) / (2 * D + alpha * dTheta);  
     double frameInterval = 1.0 / framePerSeconds;
     double dt = std::min(dtMax, frameInterval);  
     int steps = static_cast<int>(T / dt) + 1;
     
-    return {T, D, K, dTheta, thetaPoints, minimumFrequency, maximumFrequency, dFrequency, frequencyPoints, dt, steps, frameInterval};
+    return {T, D, K, dTheta, thetaPoints, minimumFrequency, maximumFrequency, dFrequency, frequencyPoints, alpha, dt, steps, frameInterval};
 }

@@ -41,33 +41,32 @@ void initialConditions(Density& f, Frequency& g,
                     std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
                     std::cin >> variance;
                 }
-                for (int j = 0; j < frequencyPoints; j++) {
-                    double frequency = minimumFrequency + j * dFrequency;
+                for (int i = 0; i < frequencyPoints; i++) {
+                    double frequency = minimumFrequency + i * dFrequency;
                     double diff = frequency - mean;
-                    g[j] = std::exp(- diff * diff / variance);    
+                    g[i] = std::exp(- diff * diff / variance);    
                 }
                 break;
             case 2:
-                for (int j = 0; j < frequencyPoints; j++) {
-                    g[j] = 1.0; 
+                for (int i = 0; i < frequencyPoints; i++) {
+                    g[i] = 1.0; 
                 }
                 break;
             case 3:
                 std::cout << "This initial condition is not implemented yet, the uniform distribution will be used instead. " << std::endl;
-                for (int j = 0; j < frequencyPoints; j++) {
-                    g[j] = 1.0; 
+                for (int i = 0; i < frequencyPoints; i++) {
+                    g[i] = 1.0; 
                 }
                 break;
             default:
                 break;
         }
         // Normalization of g
-        for (int j = 0; j < frequencyPoints; j++) { sum += g[j]; }
-        for (int j = 0; j < frequencyPoints; j++) { g[j] /= (sum * dFrequency); }
+        for (int i = 0; i < frequencyPoints; i++) { sum += g[i]; }
+        sum *= dFrequency;
+        for (int i = 0; i < frequencyPoints; i++) { g[i] /= sum; }
     }
-    else {
-        g[0] = 1.0;
-    }
+    else { g[0] = 1.0; }
 
 
     std::cout << "Please choose one of the following initial conditions for the density:" << std::endl;
@@ -84,6 +83,7 @@ void initialConditions(Density& f, Frequency& g,
     }
     switch (static_cast<int>(choice)) {
         case 1:
+            {
             std::cout << "Please choose the number of modes: ";
             std::cin >> n;
             while ((n < 1) || (std::cin.fail())) {
@@ -91,6 +91,10 @@ void initialConditions(Density& f, Frequency& g,
                 std::cin.clear();
                 std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
                 std::cin >> n;
+            }
+            std::vector<double> theta(thetaPoints);
+            for (int j = 0; j < thetaPoints; j++) {
+                theta[j] = j * dTheta;
             }
             for (int mode = 0; mode < n; mode++) {
                 std::cout << "Enter the mean of the distribution for mode " << mode + 1 << ": ";
@@ -117,28 +121,31 @@ void initialConditions(Density& f, Frequency& g,
                     std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
                     std::cin >> amplitude;
                 }
-                for (int i = 0; i < thetaPoints; i++) {
-                    double theta = i * dTheta;
-                    double diff = theta - mean;
-                    if (diff > PI) {diff -= 2 * PI;}
-                    else if (diff < -PI) {diff += 2 * PI;}
-                    for (int j = 0; j < frequencyPoints; j++) {
-                        f[i][j] += amplitude * std::exp(-diff * diff / (2 * variance));
+                std::vector<double> diff(thetaPoints);
+                for (int j = 0; j < thetaPoints; j++) {
+                    diff[j] = theta[j] - mean;
+                    if (diff[j] > PI) {diff[j] -= 2 * PI;}
+                    else if (diff[j] < -PI) {diff[j] += 2 * PI;}
+                }
+                for (int i = 0; i < frequencyPoints; i++) {
+                    for (int j = 0; j < thetaPoints; j++) {
+                        f[i][j] += amplitude * std::exp(- diff[j] * diff[j] / (2 * variance));
                     }    
                 }
             }
             break;
+            }
         case 2:
-            for (int j = 0; j < frequencyPoints; j++) {
-                 for (int i = 0; i < thetaPoints; i++) {
+            for (int i = 0; i < frequencyPoints; i++) {
+                 for (int j = 0; j < thetaPoints; j++) {
                     f[i][j] = 1.0; 
                 }
             }
             break;
         case 3:
             std::cout << "This initial condition is not implemented yet, the uniform distribution will be used instead. " << std::endl;
-            for (int j = 0; j < frequencyPoints; j++) {
-                 for (int i = 0; i < thetaPoints; i++) {
+            for (int i = 0; i < frequencyPoints; i++) {
+                 for (int j = 0; j < thetaPoints; j++) {
                     f[i][j] = 1.0; 
                 }
             }
@@ -147,9 +154,10 @@ void initialConditions(Density& f, Frequency& g,
             break;
     }
     // Normalization for every natural frequency
-    for (int j = 0; j < frequencyPoints; j++) {
+    for (int i = 0; i < frequencyPoints; i++) {
         sum = 0;
-        for (int i = 0; i < thetaPoints; i++) { sum += f[i][j]; }
-        for (int i = 0; i < thetaPoints; i++) { f[i][j] /= (sum * dTheta); }
+        for (int j = 0; j < thetaPoints; j++) { sum += f[i][j]; }
+        sum *= dTheta;
+        for (int j = 0; j < thetaPoints; j++) { f[i][j] /= sum; }
     }
 }

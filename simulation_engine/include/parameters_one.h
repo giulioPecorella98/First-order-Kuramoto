@@ -10,6 +10,7 @@ struct Parameters {
     double maximumFrequency;
     double dFrequency;
     int frequencyPoints;
+    double alpha;
     double dt;
     int steps;
     double frameInterval;

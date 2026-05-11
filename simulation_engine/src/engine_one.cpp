@@ -3,7 +3,6 @@
 #include "parameters_one.h"
 #include "order_parameter.h"
 #include "saving_density.h"
-#include <ctime>
 
 
 int main() {
@@ -21,9 +20,9 @@ int main() {
     } 
 
     Parameters p = loadParameters();                                            // Load parameters
-    Density f(p.thetaPoints, Frequency(p.frequencyPoints, 0.0));                // Solution vector
-    Density fnew(p.thetaPoints,  Frequency(p.frequencyPoints, 0.0));            // Auxiliary vector
-    Frequency g(p.frequencyPoints, 0.0);                                        // Vector of natural frequencies
+    Density f(p.frequencyPoints, std::vector<double>(p.thetaPoints));                // Solution vector
+    Density fnew(p.frequencyPoints,  std::vector<double>(p.thetaPoints));            // Auxiliary vector
+    Frequency g(p.frequencyPoints);                                        // Vector of natural frequencies
 
     fwrite(&p.thetaPoints, sizeof(int), 1, file);
     fwrite(&p.frequencyPoints, sizeof(int), 1, file);
@@ -35,45 +34,37 @@ int main() {
 
     // Apply the initial conditions
     initialConditions(f, g, p.thetaPoints, p.dTheta, p.frequencyPoints, p.dFrequency, p.minimumFrequency, p.maximumFrequency);
-    
-    
-    
-    
-    
-    time_t now = time(nullptr);
-    
-    
-    
     fwrite(g.data(), sizeof(double), p.frequencyPoints, file);
-    for (const auto& phase : f) {                                       
-        fwrite(phase.data(), sizeof(double), p.frequencyPoints, file);    
+    for (const auto& freq : f) {                                       
+        fwrite(freq.data(), sizeof(double), p.thetaPoints, file);    
     }
-    OrderParameter ordR =  computeR(f, g, p.thetaPoints, p.frequencyPoints, p.dTheta, p.dFrequency); 
+    OrderParameter ordR =  computeR(f, g, p.thetaPoints, p.dTheta, p.frequencyPoints, p.dFrequency); 
     fwrite(&ordR.R, sizeof(double), 1, file);
 
     // Start the simulation
     double updateTime = 0.0;
+    std::cout << "\rComputing: [" << std::string(100, ' ') << "] 0%" << std::flush;
     for (int t = 0; t < p.steps; t++) {
 
         // Compute the solution at each time step
-        finiteDifference(f, fnew, g, p.thetaPoints, p.dTheta, p.frequencyPoints, p.dFrequency, p.minimumFrequency, p.dt, p.D, p.K);
+        finiteDifference(f, fnew, g, p.thetaPoints, p.dTheta, p.frequencyPoints, p.dFrequency, p.minimumFrequency, p.dt, p.D, p.K, p.alpha);
         std::swap(f, fnew); 
         
         // Save the solution a the specified frame intervals
         updateTime += p.dt;
         if (static_cast<int>(updateTime / p.frameInterval) >= 1) {
-            for (const auto& phase : f) {
-                fwrite(phase.data(), sizeof(double), p.frequencyPoints, file);
+            for (const auto& freq : f) {
+                fwrite(freq.data(), sizeof(double), p.thetaPoints, file);
             }
-            OrderParameter ordR =  computeR(f, g, p.thetaPoints, p.frequencyPoints, p.dTheta, p.dFrequency);
+            OrderParameter ordR =  computeR(f, g, p.thetaPoints, p.dTheta, p.frequencyPoints, p.dFrequency);
             fwrite(&ordR.R, sizeof(double), 1, file);
             updateTime = 0.0;
         }
         else if (t == p.steps - 1) {
-            for (const auto& phase : f) {                                     
-                fwrite(phase.data(), sizeof(double), p.frequencyPoints, file); 
+            for (const auto& freq : f) {                                     
+                fwrite(freq.data(), sizeof(double), p.thetaPoints, file); 
             }
-            OrderParameter ordR =  computeR(f, g, p.thetaPoints, p.frequencyPoints, p.dTheta, p.dFrequency); 
+            OrderParameter ordR =  computeR(f, g, p.thetaPoints, p.dTheta, p.frequencyPoints, p.dFrequency); 
             fwrite(&ordR.R, sizeof(double), 1, file);
         }
 
@@ -89,11 +80,6 @@ int main() {
     std::cout << "Simulation completed successfully." << std::endl;
     fclose(file);
     std::cout << "Result saved successfully in " << fullpath.generic_string() << "." << std::endl;
-
-
-    time_t end = time(nullptr);
-    double elapsed = difftime(end, now);
-    std::cout << "Elapsed time: " << elapsed << " seconds." << std::endl;
 
     return 0;
 }

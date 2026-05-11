@@ -59,10 +59,10 @@ def densityEvolution():
                 D = struct.unpack('d', f.read(8))[0]
                 K = struct.unpack('d', f.read(8))[0]
                 g = np.fromfile(f, dtype = np.float64, count = frequencyPoints)
-                size = thetaPoints * frequencyPoints
+                size = frequencyPoints * thetaPoints * 8
                 while True:
-                    data = f.read(size * 8)  
-                    if len(data) != size * 8:
+                    data = f.read(size)  
+                    if len(data) != size:
                         break
                     rho.append(np.frombuffer(data, dtype = np.float64))
                     r.append(struct.unpack('d', f.read(8))[0])
@@ -73,17 +73,18 @@ def densityEvolution():
         except Exception as e:
             print(f"An error occurred while reading the file: {e}. Returning to the main menu...")
             return  
-    rho = rho.reshape((timePoints, thetaPoints, frequencyPoints))
+    rho = rho.reshape((timePoints, frequencyPoints, thetaPoints))
     dt = finalTime / (timePoints - 1)
     vmax = np.max(rho)
-    vmin = np.min(np.min(rho), 0)  
+    vmin = min(np.min(rho), 0)  
+    theta = np.linspace(0, 2 * np.pi, thetaPoints)
+    frequency = np.linspace(minimumFrequency, maximumFrequency, frequencyPoints)
+    print("Plotting the evolution of the density...")
 
     # Plot the evolution of the density for identical oscillators
     if (frequencyPoints == 1):
-        print("Plotting the evolution of the density...")
-        theta = np.linspace(0, 2 * np.pi, thetaPoints)
         fig, ax = plt.subplots()
-        line, = ax.plot(theta, rho[0, :, 0])
+        line, = ax.plot(theta, rho[0, 0, :])
         ax.set_xlabel(r"$\theta$")
         ax.set_ylabel(r"$\rho$")
         ax.set_xlim(0, 2 * np.pi)
@@ -91,7 +92,7 @@ def densityEvolution():
         title = ax.set_title(r"Density $\rho(\theta, t=$" + f"{0:.2f})")
         plt.pause(2)
         for t in range(1, timePoints):
-            line.set_ydata(rho[t, :, 0])
+            line.set_ydata(rho[t, 0, :])
             title.set_text(r"Density $\rho(\theta, t=$" + f"{t*dt:.2f})")
             plt.pause(dt)
         plt.pause(2)
@@ -100,7 +101,7 @@ def densityEvolution():
         # Plot initial density
         initialFigure = plt.figure()
         ax_init = initialFigure.add_subplot(111)
-        ax_init.plot(theta, rho[0, :, 0], 'b-', linewidth = 2)
+        ax_init.plot(theta, rho[0, 0, :], 'b-', linewidth = 2)
         ax_init.set_xlabel(r"$\theta$")
         ax_init.set_ylabel(r"$\rho$")
         ax_init.set_ylim(vmin * 1.1, vmax * 1.1)
@@ -111,7 +112,7 @@ def densityEvolution():
         # Plot final density
         finalFigure = plt.figure()
         ax_final = finalFigure.add_subplot(111)
-        ax_final.plot(theta, rho[-1, :, 0], 'r-', linewidth=2)
+        ax_final.plot(theta, rho[-1, 0, :], 'r-', linewidth=2)
         ax_final.set_xlabel(r"$\theta$")
         ax_final.set_ylabel(r"$\rho$")
         ax_final.set_ylim(vmin * 1.1, vmax * 1.1)
@@ -121,15 +122,14 @@ def densityEvolution():
     
     # Plotting the evolution of the density for non identical oscillators
     else: 
-        print("Plotting the evolution of the density...")
         fig, ax = plt.subplots()
         im = ax.imshow(rho[0, :, :].T,
-                extent = [0, 2 * np.pi, minimumFrequency, maximumFrequency],
+                extent = [minimumFrequency, maximumFrequency, 0, 2 * np.pi],
                 aspect = 'auto', origin = 'lower')
         fig.colorbar(im, ax = ax)
         title = ax.set_title(r"Density $\rho(\theta, \Omega,$" + f"{0:.2f})")
-        ax.set_xlabel(r"$\theta$")
-        ax.set_ylabel(r"$\Omega$")
+        ax.set_ylabel(r"$\theta$")
+        ax.set_xlabel(r"$\Omega$")
         plt.pause(2)
         for t in range(1, timePoints):
             im.set_data(rho[t, :, :].T)
@@ -139,24 +139,22 @@ def densityEvolution():
         plt.close(fig) 
 
         # 3D plots of the initial and final density
-        theta = np.linspace(0, 2 * np.pi, thetaPoints)
-        frequency = np.linspace(minimumFrequency, maximumFrequency, frequencyPoints)
-        Theta, Frequency = np.meshgrid(theta, frequency)
+        Frequency, Theta = np.meshgrid(frequency, theta)
         fig0 = plt.figure()
         ax0 = fig0.add_subplot(111, projection = '3d')
         ax0.set_box_aspect([1, 1, 0.7])
-        ax0.plot_surface(Theta, Frequency, rho[0, :, :].T, cmap = 'viridis', vmin = vmin, vmax = vmax)
+        ax0.plot_surface(Frequency, Theta, rho[0, :, :].T, cmap = 'viridis', vmin = vmin, vmax = vmax)
         ax0.set_title("Initial density at t = 0")
-        ax0.set_xlabel(r"$\theta$")
-        ax0.set_ylabel(r"$\Omega$")
+        ax0.set_ylabel(r"$\theta$")
+        ax0.set_xlabel(r"$\Omega$")
         ax0.set_zlabel(r"$\rho$")
         fig1 = plt.figure()
         ax1 = fig1.add_subplot(111, projection = '3d')
         ax1.set_box_aspect([1, 1, 0.7])
-        ax1.plot_surface(Theta, Frequency, rho[-1, :, :].T, cmap = 'viridis', vmin = vmin, vmax = vmax)
+        ax1.plot_surface(Frequency, Theta, rho[-1, :, :].T, cmap = 'viridis', vmin = vmin, vmax = vmax)
         ax1.set_title(f"Final density at t = {finalTime:.2f}")
-        ax1.set_xlabel(r"$\theta$")
-        ax1.set_ylabel(r"$\Omega$")
+        ax1.set_ylabel(r"$\theta$")
+        ax1.set_xlabel(r"$\Omega$")
         ax1.set_zlabel(r"$\rho$")
         mappable = plt.cm.ScalarMappable(cmap = 'viridis')
         mappable.set_array(rho)
