@@ -12,4 +12,5 @@ struct OrderParameter {
 
 OrderParameter computeR (Density& f, Frequency& g,  
                          int thetaPoints, double dTheta,
+                         std::vector<double>& cosine, std::vector<double>& sine,
                          int frequencyPoints, double dFrequency); 

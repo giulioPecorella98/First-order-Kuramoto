@@ -20,7 +20,24 @@ int main() {
         return 1; 
     } 
 
-    Parameters p = loadParameters();                                        // Load parameters 
+    Parameters p = loadParameters();    
+    // Define some auxiliary vectors for the finite difference scheme, to avoid computing them at each time step
+    double theta;
+    std::vector<double> cosine(p.thetaPoints);
+    std::vector<double> sine(p.thetaPoints);
+    std::vector<int> jNext(p.thetaPoints);
+    std::vector<int> jPrev(p.thetaPoints);
+    std::vector<double> freq(p.frequencyPoints);
+    for (int j = 0; j < p.thetaPoints; j++) {
+        theta = j * p.dTheta;
+        cosine[j] = cos(theta);
+        sine[j] = sin(theta);
+        jNext[j] = (j + 1 == p.thetaPoints) ? 0 : j + 1;
+        jPrev[j] = (j == 0) ? p.thetaPoints - 1 : j - 1;
+    }
+    for (int i = 0; i < p.frequencyPoints; i++) {
+        freq[i] = p.minimumFrequency + i * p.dFrequency;
+    }                                    // Load parameters 
     fwrite(&p.Kpoints, sizeof(int), 1, file);
     fwrite(&p.Kmax, sizeof(double), 1, file);
 
@@ -30,7 +47,7 @@ int main() {
 
     // Apply the initial conditions and run the simulation for different values of K, saving the order parameter R for each value of K in the binary file
     initialConditions(f, g, p.thetaPoints, p.dTheta, p.frequencyPoints, p.dFrequency, p.minimumFrequency, p.maximumFrequency); 
-    OrderParameter ordR =  computeR(f, g, p.thetaPoints, p.dTheta, p.frequencyPoints, p.dFrequency);              
+    OrderParameter ordR =  computeR(f, g, p.thetaPoints, p.dTheta, cosine, sine, p.frequencyPoints, p.dFrequency);              
     double multiplyFactor = p.Kmax / (p.Kpoints - 1);       
     double maxFrequency = std::max(std::abs(p.minimumFrequency), std::abs(p.maximumFrequency));
     double alpha;
@@ -57,9 +74,10 @@ int main() {
         for (int t = 0; t < steps; t++) {
 
             // Compute the solution at each time step
-            finiteDifference(f, fnew, g, p.thetaPoints, p.dTheta, p.frequencyPoints, p.dFrequency, p.minimumFrequency,  dt, p.D, K, alpha);
+            finiteDifference(f, fnew, g, cosine, sine, jNext, jPrev, freq, p.thetaPoints, p.dTheta, 
+                             p.frequencyPoints, p.dFrequency, p.minimumFrequency,  dt, p.D, K, alpha);
             std::swap(f, fnew); 
-            OrderParameter ordRnew =  computeR(f, g, p.thetaPoints, p.dTheta, p.frequencyPoints, p.dFrequency); 
+            OrderParameter ordRnew =  computeR(f, g, p.thetaPoints, p.dTheta, cosine, sine, p.frequencyPoints, p.dFrequency); 
             Rnew = ordRnew.R;
 
             // Check if the order parameter has reached an asymptotic value, in which case we can stop the simulation and save the result

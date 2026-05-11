@@ -10,7 +10,7 @@ def orderParameterEvolution():
 
     simulation =  input("Which simulation do you wish to load? (type 's' to see available simulations, 'q' to quit to main menu) ")
     path = Path("save/order_parameter")
-    path.mkdir(parents=True, exist_ok=True)
+    path.mkdir(parents = True, exist_ok = True)
     while simulation == 's':
         print(f"The available simulations are: {', '.join(os.listdir(path))}")
         simulation = input("Which simulation do you wish to load? ")
@@ -18,6 +18,7 @@ def orderParameterEvolution():
             return
     
     continueAnalysis = True
+    # Load data from the binary file
     while continueAnalysis:
         try:
             with open(path / simulation, "rb") as file:            
@@ -51,7 +52,8 @@ def orderParameterEvolution():
         plt.title(f"Natural frequency distribution")
         plt.xlabel(r"$\Omega$")
         plt.ylabel(r"$g(\Omega)$")
-        plt.xlim(minimumFrequency, maximumFrequency)
+        xOffsets = 0.1 * max(abs(maximumFrequency), abs(minimumFrequency))
+        plt.xlim(minimumFrequency - xOffsets, maximumFrequency + xOffsets)
         plt.ylim(0, np.max(g) * 1.1)
         plt.show(block = False)
 

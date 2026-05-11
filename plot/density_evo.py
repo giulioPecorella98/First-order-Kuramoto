@@ -37,7 +37,6 @@ def densityEvolution():
     simulation = input("Which simulation do you wish to load? (type 's' to see available simulations, 'q' to quit to main menu) ")
     path = Path("save/density")
     path.mkdir(parents = True, exist_ok = True)
-
     while simulation == 's':
         print(f"The available simulations are: {', '.join(os.listdir(path))}")
         simulation = input("Which simulation do you wish to load? ")    
@@ -101,7 +100,7 @@ def densityEvolution():
         # Plot initial density
         initialFigure = plt.figure()
         ax_init = initialFigure.add_subplot(111)
-        ax_init.plot(theta, rho[0, 0, :], 'b-', linewidth = 2)
+        ax_init.plot(theta, rho[0, 0, :], linewidth = 2)
         ax_init.set_xlabel(r"$\theta$")
         ax_init.set_ylabel(r"$\rho$")
         ax_init.set_ylim(vmin * 1.1, vmax * 1.1)
@@ -112,7 +111,7 @@ def densityEvolution():
         # Plot final density
         finalFigure = plt.figure()
         ax_final = finalFigure.add_subplot(111)
-        ax_final.plot(theta, rho[-1, 0, :], 'r-', linewidth=2)
+        ax_final.plot(theta, rho[-1, 0, :], linewidth = 2)
         ax_final.set_xlabel(r"$\theta$")
         ax_final.set_ylabel(r"$\rho$")
         ax_final.set_ylim(vmin * 1.1, vmax * 1.1)
@@ -130,12 +129,12 @@ def densityEvolution():
         title = ax.set_title(r"Density $\rho(\theta, \Omega,$" + f"{0:.2f})")
         ax.set_ylabel(r"$\theta$")
         ax.set_xlabel(r"$\Omega$")
-        plt.pause(2)
+        plt.pause(1)
         for t in range(1, timePoints):
             im.set_data(rho[t, :, :].T)
             title.set_text(r"Density $\rho(\theta, \Omega,$" + f"{t*dt:.2f})")
             plt.pause(dt)
-        plt.pause(2)
+        plt.pause(1)
         plt.close(fig) 
 
         # 3D plots of the initial and final density
@@ -165,9 +164,9 @@ def densityEvolution():
         ax1.set_zlim(vmin, vmax)
         fig0.canvas.mpl_connect('button_press_event', onButtonPress)
         fig0.canvas.mpl_connect('button_release_event', onButtonRelease)
+        fig0.canvas.mpl_connect('scroll_event', onScroll)
         fig1.canvas.mpl_connect('button_press_event', onButtonPress)
         fig1.canvas.mpl_connect('button_release_event', onButtonRelease)
-        fig0.canvas.mpl_connect('scroll_event', onScroll)
         fig1.canvas.mpl_connect ('scroll_event', onScroll)
         plt.show(block = False)
 
@@ -176,7 +175,8 @@ def densityEvolution():
         plt.title(r"Frequency distribution $g(\Omega)$")
         plt.xlabel(r"$\Omega$")
         plt.ylabel(r"$g(\Omega)$")
-        plt.xlim(minimumFrequency, maximumFrequency)
+        xOffsets = 0.1 * max(abs(maximumFrequency), abs(minimumFrequency))
+        plt.xlim(minimumFrequency - xOffsets, maximumFrequency + xOffsets)
         plt.ylim(0, np.max(g) * 1.1)
         plt.show(block = False)
 

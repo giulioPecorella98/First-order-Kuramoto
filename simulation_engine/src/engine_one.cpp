@@ -22,7 +22,24 @@ int main() {
     Parameters p = loadParameters();                                            // Load parameters
     Density f(p.frequencyPoints, std::vector<double>(p.thetaPoints));                // Solution vector
     Density fnew(p.frequencyPoints,  std::vector<double>(p.thetaPoints));            // Auxiliary vector
-    Frequency g(p.frequencyPoints);                                        // Vector of natural frequencies
+    Frequency g(p.frequencyPoints); 
+    // Define some auxiliary vectors for the finite difference scheme, to avoid computing them at each time step
+    double theta;
+    std::vector<double> cosine(p.thetaPoints);
+    std::vector<double> sine(p.thetaPoints);
+    std::vector<int> jNext(p.thetaPoints);
+    std::vector<int> jPrev(p.thetaPoints);
+    std::vector<double> freq(p.frequencyPoints);
+    for (int j = 0; j < p.thetaPoints; j++) {
+        theta = j * p.dTheta;
+        cosine[j] = cos(theta);
+        sine[j] = sin(theta);
+        jNext[j] = (j + 1 == p.thetaPoints) ? 0 : j + 1;
+        jPrev[j] = (j == 0) ? p.thetaPoints - 1 : j - 1;
+    }
+    for (int i = 0; i < p.frequencyPoints; i++) {
+        freq[i] = p.minimumFrequency + i * p.dFrequency;
+    }                                       // Vector of natural frequencies
 
     fwrite(&p.thetaPoints, sizeof(int), 1, file);
     fwrite(&p.frequencyPoints, sizeof(int), 1, file);
@@ -38,7 +55,7 @@ int main() {
     for (const auto& freq : f) {                                       
         fwrite(freq.data(), sizeof(double), p.thetaPoints, file);    
     }
-    OrderParameter ordR =  computeR(f, g, p.thetaPoints, p.dTheta, p.frequencyPoints, p.dFrequency); 
+    OrderParameter ordR =  computeR(f, g, p.thetaPoints, p.dTheta, cosine, sine, p.frequencyPoints, p.dFrequency); 
     fwrite(&ordR.R, sizeof(double), 1, file);
 
     // Start the simulation
@@ -47,7 +64,8 @@ int main() {
     for (int t = 0; t < p.steps; t++) {
 
         // Compute the solution at each time step
-        finiteDifference(f, fnew, g, p.thetaPoints, p.dTheta, p.frequencyPoints, p.dFrequency, p.minimumFrequency, p.dt, p.D, p.K, p.alpha);
+        finiteDifference(f, fnew, g, cosine, sine, jNext, jPrev, freq, p.thetaPoints, p.dTheta, 
+                         p.frequencyPoints, p.dFrequency, p.minimumFrequency, p.dt, p.D, p.K, p.alpha);
         std::swap(f, fnew); 
         
         // Save the solution a the specified frame intervals
@@ -56,7 +74,7 @@ int main() {
             for (const auto& freq : f) {
                 fwrite(freq.data(), sizeof(double), p.thetaPoints, file);
             }
-            OrderParameter ordR =  computeR(f, g, p.thetaPoints, p.dTheta, p.frequencyPoints, p.dFrequency);
+            OrderParameter ordR =  computeR(f, g, p.thetaPoints, p.dTheta, cosine, sine, p.frequencyPoints, p.dFrequency);
             fwrite(&ordR.R, sizeof(double), 1, file);
             updateTime = 0.0;
         }
@@ -64,7 +82,7 @@ int main() {
             for (const auto& freq : f) {                                     
                 fwrite(freq.data(), sizeof(double), p.thetaPoints, file); 
             }
-            OrderParameter ordR =  computeR(f, g, p.thetaPoints, p.dTheta, p.frequencyPoints, p.dFrequency); 
+            OrderParameter ordR =  computeR(f, g, p.thetaPoints, p.dTheta, cosine, sine, p.frequencyPoints, p.dFrequency); 
             fwrite(&ordR.R, sizeof(double), 1, file);
         }
 
