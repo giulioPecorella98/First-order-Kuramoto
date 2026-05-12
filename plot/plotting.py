@@ -1,5 +1,5 @@
-import plot.density_evo as de
-import plot.order_parameter_evo as ope
+from . import density_evo as de
+from . import order_parameter_evo as ope
 
 
 
