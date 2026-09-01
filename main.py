@@ -1,41 +1,50 @@
-import subprocess
 import os
+import subprocess
+
 from plot import plotting
 
 
 
 def main():
-    print("\n\n\033[91m==========================================================================================")
-    print("|             Welcome to the first order mean field Kuramoto model simulator!            |")
-    print("==========================================================================================")
-    print("\033[33m    Here you have the opportunity to simulate the dynamics of the first order Kuramoto")
-    print("    model, choosing the initial distribution of the oscillators, the natural frequency")
+    print("\n\n\033[91m======================================================",
+          "====================================")
+    print("|             Welcome to the first order mean field Kuramoto model",
+          " simulator!            |")
+    print("==================================================================",
+          "========================")
+    print("\033[33m    Here you have the opportunity to simulate the dynamics",
+          " of the first order Kuramoto")
+    print("    model, choosing the initial distribution of the oscillators,",
+          " the natural frequency")
     print("    distribution, the noise level D, and the coupling constant K.")
-    print("------------------------------------------------------------------------------------------")
+    print("------------------------------------------------------------------",
+          "------------------------")
     print("\n\033[0mWhat do you want to do?")
     print("1) Run a new simulation")
     print("2) Test order parameter dependence on K")
     print("3) Load a saved simulation")
     print("4) Exit")
 
-    userInput = input("Please type your choice: ")
-    while(userInput != "4"):
+    user_input = input("Please type your choice: ")
+    while user_input != "4":
     
-        if userInput == "1":    
+        if user_input == "1":    
             print()
             project_root = os.path.dirname(os.path.abspath(__file__))
-            exe_path = os.path.join(project_root, "simulation_engine", "engine_one")
+            exe_path = os.path.join(project_root, 
+                                    "simulation_engine", "engine_one")
             subprocess.run([exe_path])
     
-        elif userInput == "2":
+        elif user_input == "2":
             print()
             project_root = os.path.dirname(os.path.abspath(__file__))
-            exe_path = os.path.join(project_root, "simulation_engine", "engine_two")
+            exe_path = os.path.join(project_root, 
+                                    "simulation_engine", "engine_two")
             subprocess.run([exe_path])
     
-        elif userInput == "3":
+        elif user_input == "3":
             print()
-            plotting.DataAnalysis()
+            plotting.data_analysis()
     
         else:
             print("Command not valid, please try again.")
@@ -45,9 +54,10 @@ def main():
         print("2) Test order parameter dependence on K")
         print("3) Load a saved simulation")
         print("4) Exit")
-        userInput = input("Please type your choice: ")
+        user_input = input("Please type your choice: ")
 
-    print("\033[91m\nThank you for using the first order mean field Kuramoto model simulator! See you next time!\n\n")
+    print("\033[91m\nThank you for using the first order mean field Kuramoto",
+          " model simulator! See you next time!\n\n")
 
 if __name__ == "__main__":
     main()

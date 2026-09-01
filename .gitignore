@@ -5,6 +5,7 @@ build/
 cmake-build-*/
 out/
 Debug/
+test/
 Release/
 __pycache__/
 *.py[cod]

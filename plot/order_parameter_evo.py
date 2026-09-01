@@ -1,37 +1,40 @@
-import numpy as np
-import struct
-import matplotlib.pyplot as plt
-from pathlib import Path
 import os
+import struct
+from pathlib import Path
+
+import numpy as np
+import matplotlib.pyplot as plt
 
 
 
-def orderParameterEvolution():
+def order_parameter_evolution():
 
-    simulation =  input("Which simulation do you wish to load? (type 's' to see available simulations, 'q' to quit to main menu) ")
+    simulation = input("Which simulation do you wish to load? (type 's' to see"
+                       " available simulations, 'q' to quit to main menu): ")
     path = Path("save/order_parameter")
-    path.mkdir(parents = True, exist_ok = True)
+    path.mkdir(parents=True, exist_ok=True)
     while simulation == 's':
         print(f"The available simulations are: {', '.join(os.listdir(path))}")
         simulation = input("Which simulation do you wish to load? ")
     if simulation == 'q':
             return
     
-    continueAnalysis = True
+    continue_analysis = True
     # Load data from the binary file
-    while continueAnalysis:
+    while continue_analysis:
         try:
             with open(path / simulation, "rb") as file:            
-                KPoints = struct.unpack('i', file.read(4))[0]
+                K_points = struct.unpack('i', file.read(4))[0]
                 Kmax = struct.unpack('d', file.read(8))[0]
-                K = np.linspace(0, Kmax, KPoints)
-                r = np.fromfile(file, dtype = np.float64, count = KPoints)
-                minimumFrequency = struct.unpack('d', file.read(8))[0]
-                maximumFrequency = struct.unpack('d', file.read(8))[0]
-                g = np.fromfile(file, dtype = np.float64, count = -1)
-                continueAnalysis = False
+                K = np.linspace(0, Kmax, K_points)
+                r = np.fromfile(file, dtype=np.float64, count=K_points)
+                minimum_frequency = struct.unpack('d', file.read(8))[0]
+                maximum_frequency = struct.unpack('d', file.read(8))[0]
+                g = np.fromfile(file, dtype=np.float64, count=-1)
+                continue_analysis = False
         except Exception as e:
-            print(f"An error occurred while reading the file: {e}. Returning to the main menu...")
+            print(f"An error occurred while reading the file: {e}. Returning",
+                  " to the main menu...")
             return  
 
     print("Plotting the order parameter evolution...")
@@ -42,20 +45,20 @@ def orderParameterEvolution():
     plt.ylim(0, 1.1)
     plt.xlabel(r"$K$")
     plt.ylabel(r"$r(K)$")
-    plt.show(block = False)
+    plt.show(block=False)
 
     if len(g) > 1:
         print("Plotting the natural frequency distribution...")
         plt.figure()
-        frequency = np.linspace(minimumFrequency, maximumFrequency, len(g))
+        frequency = np.linspace(minimum_frequency, maximum_frequency, len(g))
         plt.plot(frequency, g)
         plt.title(f"Natural frequency distribution")
         plt.xlabel(r"$\Omega$")
         plt.ylabel(r"$g(\Omega)$")
-        xOffsets = 0.1 * max(abs(maximumFrequency), abs(minimumFrequency))
-        plt.xlim(minimumFrequency - xOffsets, maximumFrequency + xOffsets)
+        x_offsets = 0.1 * max(abs(maximum_frequency), abs(minimum_frequency))
+        plt.xlim(minimum_frequency - x_offsets, maximum_frequency + x_offsets)
         plt.ylim(0, np.max(g) * 1.1)
-        plt.show(block = False)
+        plt.show(block=False)
 
     input("Press Enter to close the plot...")
     plt.close('all')
