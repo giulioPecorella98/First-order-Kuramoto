@@ -1,7 +1,8 @@
 /*
-Function to load the parameters of the simulation by asking the user to input them in the terminal. 
-The function also computes some derived parameters such as the time step dt, the number of steps, 
-and the number of frames to be plotted, by taking care of the stability condition for the finite difference scheme.
+Function to load the parameters of the simulation by asking the user to input 
+them in the terminal. The function also computes some derived parameters such 
+as the time step dt, the number of steps, and the number of frames to be 
+plotted, by taking care of the stability condition for the numerical scheme.
 */
 #include "parameters_one.h"
 #include <iostream>
@@ -16,7 +17,8 @@ Parameters loadParameters() {
     std::cout << "1) Enter the final time T: ";
     std::cin >> T;  
     while ((T <= 0) || (std::cin.fail())) {
-        std::cout << "Invalid choice. The final time must be a positive number: ";
+        std::cout << 
+                  "Invalid choice. The final time must be a positive number: ";
         std::cin.clear();
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
         std::cin >> T;
@@ -25,7 +27,8 @@ Parameters loadParameters() {
     std::cout << "2) Enter the noise level D: ";
     std::cin >> D;  
     while ((D < 0) || (std::cin.fail())) {
-        std::cout << "Invalid choice. The noise level must be a nonnegative number: ";
+        std::cout << 
+              "Invalid choice. The noise level must be a nonnegative number: ";
         std::cin.clear();
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
         std::cin >> D;
@@ -34,7 +37,8 @@ Parameters loadParameters() {
     std::cout << "3) Enter the coupling constant K: ";
     std::cin >> K;
     while ((K < 0) || (std::cin.fail())) {
-        std::cout << "Invalid choice. The coupling constant must be a nonnegative number: ";
+        std::cout << 
+        "Invalid choice. The coupling constant must be a nonnegative number: ";
         std::cin.clear();
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
         std::cin >> K;
@@ -43,7 +47,8 @@ Parameters loadParameters() {
     std::cout << "4) Enter the phase discretization: ";
     std::cin >> dTheta; 
     while ((dTheta <= 0) || (std::cin.fail())) {
-        std::cout << "Invalid choice. The phase discretization must be a positive number: ";
+        std::cout << 
+        "Invalid choice. The phase discretization must be a positive number: ";
         std::cin.clear();
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
         std::cin >> dTheta;
@@ -63,7 +68,9 @@ Parameters loadParameters() {
     std::cout << "6) Enter the maximum natural frequency of the oscillators: ";
     std::cin >> maximumFrequency; 
     while (std::cin.fail() || (maximumFrequency < minimumFrequency)) {
-        std::cout << "Invalid choice. Remember that the minimum frequency is at most equal to the maximum frequency: ";
+        std::cout << 
+                "Invalid choice. Remember that the minimum frequency is at "
+                "most equal to the maximum frequency: ";
         std::cin.clear();
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
         std::cin >> maximumFrequency;
@@ -78,20 +85,27 @@ Parameters loadParameters() {
     else {
         std::cout << "Enter the natural frequency discretization: ";
         std::cin >> dFrequency; 
-        while ((dFrequency <= 0) || (dFrequency > (maximumFrequency - minimumFrequency)) || (std::cin.fail())) {
-            std::cout << "Invalid choice. The natural frequency discretization must be a positive number: ";
+        while ((std::cin.fail()) || 
+               (dFrequency <= 0) || 
+               (dFrequency > (maximumFrequency - minimumFrequency))) {
+            std::cout << "Invalid choice. The natural frequency discretization"
+                         " must be a positive number: ";
             std::cin.clear();
             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
             std::cin >> dFrequency;
         }
-        frequencyPoints = static_cast<int>(((maximumFrequency - minimumFrequency) / dFrequency) + 1);
+        frequencyPoints = 
+        static_cast<int>(((maximumFrequency - minimumFrequency)/dFrequency)+1);
     }
-    double omegaMax = std::max(std::abs(minimumFrequency), std::abs(maximumFrequency));
+    double omegaMax = 
+        std::max(std::abs(minimumFrequency), std::abs(maximumFrequency));
     double alpha = K + omegaMax;
     double framePerSeconds;
     std::cout << "7) Enter the number of frames per seconds: ";
     std::cin >> framePerSeconds;  
-    while ((framePerSeconds <= 0) || (std::cin.fail()) || (framePerSeconds < (1 / T))) {
+    while ((std::cin.fail()) || 
+           (framePerSeconds <= 0) || 
+           (framePerSeconds < (1 / T))) {
         std::cout << "Invalid choice. Try again: ";
         std::cin.clear();
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
@@ -103,5 +117,6 @@ Parameters loadParameters() {
     double dt = std::min(dtMax, frameInterval);  
     int steps = static_cast<int>(T / dt) + 1;
     
-    return {T, D, K, dTheta, thetaPoints, minimumFrequency, maximumFrequency, dFrequency, frequencyPoints, alpha, dt, steps, frameInterval};
+    return {T, D, K, dTheta, thetaPoints, minimumFrequency, maximumFrequency, 
+            dFrequency, frequencyPoints, alpha, dt, steps, frameInterval};
 }

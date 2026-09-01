@@ -1,9 +1,10 @@
 #include "order_parameter.h"
 
-OrderParameter computeR (Density& f, Frequency& g, 
-                         int thetaPoints, double dTheta, 
-                         std::vector<double>& cosine, std::vector<double>& sine,
-                         int frequencyPoints, double dFrequency) {
+OrderParameter computeR (
+    Density& f, Frequency& g, 
+    int thetaPoints, double dTheta, 
+    std::vector<double>& cosine, std::vector<double>& sine,
+    int frequencyPoints, double dFrequency) {
     
     double Rcos = 0.0, Rsin = 0.0, R = 0.0;
     for (int i = 0; i < frequencyPoints; i++) {

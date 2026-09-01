@@ -144,11 +144,11 @@ def density_evolution():
         plt.close(fig) 
 
         # 3D plots of the initial and final density
-        frequency, theta = np.meshgrid(frequency, theta)
+        frequency_grid, theta_grid = np.meshgrid(frequency, theta)
         fig0 = plt.figure()
         ax0 = fig0.add_subplot(111, projection='3d')
         ax0.set_box_aspect([1, 1, 0.7])
-        ax0.plot_surface(frequency, theta, rho[0, :, :].T, 
+        ax0.plot_surface(frequency_grid, theta_grid, rho[0, :, :].T, 
                          cmap='viridis', vmin=vmin, vmax=vmax)
         ax0.set_title("Initial density at t = 0")
         ax0.set_ylabel(r"$\theta$")
@@ -157,8 +157,8 @@ def density_evolution():
         fig1 = plt.figure()
         ax1 = fig1.add_subplot(111, projection='3d')
         ax1.set_box_aspect([1, 1, 0.7])
-        ax1.plot_surface(frequency, theta, rho[-1, :, :].T, cmap='viridis', 
-                         vmin=vmin, vmax=vmax)
+        ax1.plot_surface(frequency_grid, theta_grid, rho[-1, :, :].T, 
+                         cmap='viridis', vmin=vmin, vmax=vmax)
         ax1.set_title(f"Final density at t = {final_time:.2f}")
         ax1.set_ylabel(r"$\theta$")
         ax1.set_xlabel(r"$\Omega$")

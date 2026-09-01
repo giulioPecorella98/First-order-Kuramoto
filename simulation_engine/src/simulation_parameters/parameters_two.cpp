@@ -1,5 +1,6 @@
 /*
-Function to load the parameters of the simulation by asking the user to input them in the terminal, computing also some derived parameters
+Function to load the parameters of the simulation by asking the user to input 
+them in the terminal, computing also some derived parameters
 */
 #include "parameters_two.h"
 #include <iostream>
@@ -13,7 +14,9 @@ Parameters loadParameters() {
     std::cout << "1) Enter the maximum coupling strength: ";
     std::cin >> Kmax;
     while (Kmax < 0 || std::cin.fail()) {
-        std::cout << "Invalid choice. The maximum coupling strength must be a nonnegative number: ";
+        std::cout << 
+            "Invalid choice. The maximum coupling strength must"
+            " be a nonnegative number: ";
         std::cin.clear();
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
         std::cin >> Kmax;
@@ -22,7 +25,8 @@ Parameters loadParameters() {
     std::cout << "2) Enter the number of coupling strength points: ";
     std::cin >> Kpoints;
     while ((Kpoints <= 1) || (std::cin.fail())) {
-        std::cout << "Invalid choice. The number of coupling strength points must be an integer greater than 1: ";
+        std::cout << "Invalid choice. The number of coupling strength points" 
+                     " must be an integer greater than 1: ";
         std::cin.clear();
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
         std::cin >> Kpoints;
@@ -31,7 +35,8 @@ Parameters loadParameters() {
     std::cout << "3) Enter the noise level D: ";
     std::cin >> D;  
     while ((D < 0) || (std::cin.fail())) {
-        std::cout << "Invalid choice. The noise level must be a nonnegative number: ";
+        std::cout << 
+            "Invalid choice. The noise level must be a nonnegative number: ";
         std::cin.clear();
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
         std::cin >> D;
@@ -40,7 +45,8 @@ Parameters loadParameters() {
     std::cout << "4) Enter the phase discretization: ";
     std::cin >> dTheta; 
     while ((dTheta <= 0) || (std::cin.fail())) {
-        std::cout << "Invalid choice. The phase discretization must be a positive number: ";
+        std::cout << 
+        "Invalid choice. The phase discretization must be a positive number: ";
         std::cin.clear();
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
         std::cin >> dTheta;
@@ -60,7 +66,8 @@ Parameters loadParameters() {
     std::cout << "6) Enter the maximum natural frequency of the oscillators: ";
     std::cin >> maximumFrequency; 
     while (std::cin.fail() || (maximumFrequency < minimumFrequency)) {
-        std::cout << "Invalid choice. Remember that the minimum frequency is at most equal to the maximum frequency: ";
+        std::cout << "Invalid choice. Remember that the minimum frequency"
+                     " is at most equal to the maximum frequency: ";
         std::cin.clear();
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
         std::cin >> maximumFrequency;
@@ -75,23 +82,29 @@ Parameters loadParameters() {
     else {
         std::cout << "Enter the natural frequency discretization: ";
         std::cin >> dFrequency; 
-        while ((dFrequency <= 0) || (dFrequency > (maximumFrequency - minimumFrequency)) || (std::cin.fail())) {
-            std::cout << "Invalid choice. The natural frequency discretization must be a positive number: ";
+        while ((std::cin.fail()) || 
+               (dFrequency <= 0) || 
+               (dFrequency > (maximumFrequency - minimumFrequency))) {
+            std::cout << "Invalid choice. The natural frequency discretization"
+                         " must be a positive number: ";
             std::cin.clear();
             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
             std::cin >> dFrequency;
         }
-        frequencyPoints = static_cast<int>(((maximumFrequency - minimumFrequency) / dFrequency) + 1);
+        frequencyPoints = 
+        static_cast<int>(((maximumFrequency-minimumFrequency)/dFrequency)+1);
     }
     double Tmax;
     std::cout << "7) Enter the maximum simulation time: ";
     std::cin >> Tmax;
     while ((Tmax <= 0) || (std::cin.fail())) {
-        std::cout << "Invalid choice. The maximum simulation time must be a positive number: ";
+        std::cout << "Invalid choice. The maximum simulation time must be a"
+                     " positive number: ";
         std::cin.clear();
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
         std::cin >> Tmax;
     }
 
-    return {Kmax, Kpoints, D, dTheta, thetaPoints, minimumFrequency, maximumFrequency, dFrequency, frequencyPoints, Tmax};
+    return {Kmax, Kpoints, D, dTheta, thetaPoints, minimumFrequency, 
+            maximumFrequency, dFrequency, frequencyPoints, Tmax};
 }

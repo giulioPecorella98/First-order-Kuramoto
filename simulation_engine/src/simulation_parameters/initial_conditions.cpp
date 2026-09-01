@@ -3,7 +3,8 @@
 
 void initialConditions(Density& f, Frequency& g, 
                        int thetaPoints, double dTheta, 
-                       int frequencyPoints, double dFrequency, double minimumFrequency, double maximumFrequency) {   
+                       int frequencyPoints, double dFrequency, 
+                       double minimumFrequency, double maximumFrequency) {   
     
     double PI = 3.14159265358979323846;
     double choice, n;
@@ -11,13 +12,16 @@ void initialConditions(Density& f, Frequency& g,
     double sum = 0;
     
     if (frequencyPoints != 1) { 
-        std::cout << "Please choose one of the following natural frequency initial conditions:" << std::endl;
+        std::cout << "Please choose one of the following natural frequency"
+                     " initial conditions:" << std::endl;
         std::cout << "1. Gaussian-type" << std::endl;
         std::cout << "2. uniform distribution" << std::endl;
         std::cout << "3. to be implemented" << std::endl; 
         std::cout << "Enter your choice (1, 2 or 3): ";
         std::cin >> choice;
-        while ((choice < 1) || (choice > 3) || (static_cast<int>(choice) != choice) || (std::cin.fail())) {
+        while ((std::cin.fail()) ||
+               (choice < 1) || (choice > 3) || 
+               (static_cast<int>(choice) != choice)) {
             std::cout << "Invalid choice. Please enter 1, 2 or 3: ";
             std::cin.clear();
             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
@@ -27,18 +31,25 @@ void initialConditions(Density& f, Frequency& g,
             case 1:
                 std::cout << "Enter the mean of the distribution: ";
                 std::cin >> mean;
-                while ((mean < minimumFrequency) || (mean > maximumFrequency) || (std::cin.fail())) {
-                    std::cout << "Invalid choice. The mean must be in the interval [" << minimumFrequency << ", " << maximumFrequency << "]: ";
+                while ((std::cin.fail()) ||
+                       (mean < minimumFrequency) || 
+                       (mean > maximumFrequency)) {
+                    std::cout << "Invalid choice. The mean must be in the "
+                                 "interval [" << minimumFrequency << ", " 
+                                 << maximumFrequency << "]: ";
                     std::cin.clear();
-                    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), 
+                                    '\n');
                     std::cin >> mean;
                 }
                 std::cout << "Enter the variance of the distribution: ";
                 std::cin >> variance;
                 while ((variance <= 0) || (std::cin.fail())) {
-                    std::cout << "Invalid choice. The variance must be a positive number: ";
+                    std::cout << "Invalid choice. The variance must be a "
+                                 "positive number: ";
                     std::cin.clear();
-                    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                    std::cin.ignore(std::numeric_limits<std::streamsize>::max(),
+                                     '\n');
                     std::cin >> variance;
                 }
                 for (int i = 0; i < frequencyPoints; i++) {
@@ -53,7 +64,9 @@ void initialConditions(Density& f, Frequency& g,
                 }
                 break;
             case 3:
-                std::cout << "This initial condition is not implemented yet, the uniform distribution will be used instead. " << std::endl;
+                std::cout << "This initial condition is not implemented yet, "
+                             "the uniform distribution will be used instead. " 
+                             << std::endl;
                 for (int i = 0; i < frequencyPoints; i++) {
                     g[i] = 1.0; 
                 }
@@ -69,13 +82,18 @@ void initialConditions(Density& f, Frequency& g,
     else { g[0] = 1.0; }
 
 
-    std::cout << "Please choose one of the following initial conditions for the density:" << std::endl;
-    std::cout << "1. n-modal Gaussian-type in phase, uniform in natural frequency" << std::endl;
-    std::cout << "2. uniform distribution in phase and natural frequency" << std::endl;
+    std::cout << "Please choose one of the following initial conditions for "
+                 "the density:" << std::endl;
+    std::cout << "1. n-modal Gaussian-type in phase, uniform in natural"
+                 " frequency" << std::endl;
+    std::cout << "2. uniform distribution in phase and natural frequency" 
+              << std::endl;
     std::cout << "3. to be implemented" << std::endl;
     std::cout << "Enter your choice (1, 2 or 3): ";
     std::cin >> choice;
-    while ((choice < 1) || (choice > 3) || (static_cast<int>(choice) != choice) || (std::cin.fail())) {
+    while ((std::cin.fail()) || 
+           (choice < 1) || (choice > 3) || 
+           (static_cast<int>(choice) != choice)) {
         std::cout << "Invalid choice. Please enter 1, 2 or 3: ";
         std::cin.clear();
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
@@ -87,9 +105,11 @@ void initialConditions(Density& f, Frequency& g,
             std::cout << "Please choose the number of modes: ";
             std::cin >> n;
             while ((n < 1) || (std::cin.fail())) {
-                std::cout << "Invalid choice. Please enter the number of modes: ";
+                std::cout << 
+                          "Invalid choice. Please enter the number of modes: ";
                 std::cin.clear();
-                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), 
+                                '\n');
                 std::cin >> n;
             }
             std::vector<double> theta(thetaPoints);
@@ -97,28 +117,39 @@ void initialConditions(Density& f, Frequency& g,
                 theta[j] = j * dTheta;
             }
             for (int mode = 0; mode < n; mode++) {
-                std::cout << "Enter the mean of the distribution for mode " << mode + 1 << ": ";
+                std::cout << "Enter the mean of the distribution for mode " 
+                          << mode + 1 << ": ";
                 std::cin >> mean;
-                while ((mean < 0) || (mean > 2 * PI) || (std::cin.fail())) {
-                    std::cout << "Invalid choice. The mean must be in the interval [0,2pi]: ";
+                while ((std::cin.fail()) ||
+                       (mean < 0) || 
+                       (mean > 2 * PI)) {
+                    std::cout << "Invalid choice. The mean must be in the "
+                                 "interval [0,2pi]: ";
                     std::cin.clear();
-                    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), 
+                                    '\n');
                     std::cin >> mean;
                 }
-                std::cout << "Enter the variance of the distribution for mode " << mode + 1 << ": ";
+                std::cout << "Enter the variance of the distribution for mode " 
+                          << mode + 1 << ": ";
                 std::cin >> variance;
-                while ((variance <= 0) || (std::cin.fail())) {
-                    std::cout << "Invalid choice. The variance must be a positive number: ";
+                while ((std::cin.fail()) || (variance <= 0)) {
+                    std::cout << "Invalid choice. The variance must be a"
+                                 " positive number: ";
                     std::cin.clear();
-                    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), 
+                                    '\n');
                     std::cin >> variance;
                 }
-                std::cout << "Enter the amplitude of the distribution for mode " << mode + 1 << ": ";
+                std::cout << "Enter the amplitude of the distribution for mode " 
+                          << mode + 1 << ": ";
                 std::cin >> amplitude;  
-                while ((amplitude < 0) || (std::cin.fail())) {
-                    std::cout << "Invalid choice. The amplitude must be a positive number: ";
+                while ((std::cin.fail()) || (amplitude < 0)) {
+                    std::cout << "Invalid choice. The amplitude must be a"
+                                 " positive number: ";
                     std::cin.clear();
-                    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), 
+                                     '\n');
                     std::cin >> amplitude;
                 }
                 std::vector<double> diff(thetaPoints);
@@ -129,7 +160,8 @@ void initialConditions(Density& f, Frequency& g,
                 }
                 for (int i = 0; i < frequencyPoints; i++) {
                     for (int j = 0; j < thetaPoints; j++) {
-                        f[i][j] += amplitude * std::exp(- diff[j] * diff[j] / (2 * variance));
+                        f[i][j] += amplitude * std::exp(- diff[j] 
+                                 * diff[j] / (2 * variance));
                     }    
                 }
             }
@@ -143,7 +175,9 @@ void initialConditions(Density& f, Frequency& g,
             }
             break;
         case 3:
-            std::cout << "This initial condition is not implemented yet, the uniform distribution will be used instead. " << std::endl;
+            std::cout << "This initial condition is not implemented yet, the "
+                         "uniform distribution will be used instead. " 
+                         << std::endl;
             for (int i = 0; i < frequencyPoints; i++) {
                  for (int j = 0; j < thetaPoints; j++) {
                     f[i][j] = 1.0; 

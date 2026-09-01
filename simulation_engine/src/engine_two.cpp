@@ -7,13 +7,15 @@
 
 
 int main() {
-    // Enter the name of the binary file where the result will be saved, and save the result in a binary file in the "save/order_parameter" subfolder
+    // Enter the name of the binary file where the result will be saved, and 
+    // save the result in a binary file in the "save/order_parameter" subfolder
     std::string filename = save();
     if (filename == "quit") {
         std::cout << "Returning to the main menu..." << std::endl;
         return 0;
     }
-    std::filesystem::path fullpath = std::filesystem::path(PROJECT_ROOT) / "save" / "order_parameter" / (filename);
+    std::filesystem::path fullpath = std::filesystem::path(PROJECT_ROOT) 
+                                     / "save" / "order_parameter" / (filename);
     FILE* file = fopen(fullpath.string().c_str(), "wb");
     if (!file) {
         std::cerr << "Error: file not saved. "<< std::endl;
@@ -21,7 +23,8 @@ int main() {
     } 
 
     Parameters p = loadParameters();    
-    // Define some auxiliary vectors for the finite difference scheme, to avoid computing them at each time step
+    // Define some auxiliary vectors for the finite difference scheme, 
+    // to avoid computing them at each time step
     double theta;
     std::vector<double> cosine(p.thetaPoints);
     std::vector<double> sine(p.thetaPoints);
@@ -41,15 +44,24 @@ int main() {
     fwrite(&p.Kpoints, sizeof(int), 1, file);
     fwrite(&p.Kmax, sizeof(double), 1, file);
 
-    Density f(p.frequencyPoints, std::vector<double>(p.thetaPoints));         // Solution vector
-    Density fnew(p.frequencyPoints,  std::vector<double>(p.thetaPoints));     // Auxiliary vector
-    Frequency g(p.frequencyPoints);                                 // Vector of natural frequencies
+     // Solution vector
+    Density f(p.frequencyPoints, std::vector<double>(p.thetaPoints));        
+    // Auxiliary vector
+    Density fnew(p.frequencyPoints,  std::vector<double>(p.thetaPoints));
+    // Vector of natural frequencies    
+    Frequency g(p.frequencyPoints); 
 
-    // Apply the initial conditions and run the simulation for different values of K, saving the order parameter R for each value of K in the binary file
-    initialConditions(f, g, p.thetaPoints, p.dTheta, p.frequencyPoints, p.dFrequency, p.minimumFrequency, p.maximumFrequency); 
-    OrderParameter ordR =  computeR(f, g, p.thetaPoints, p.dTheta, cosine, sine, p.frequencyPoints, p.dFrequency);              
+    // Apply the initial conditions and run the simulation for different values
+    // of K, saving the order parameter for each value of K in the binary file
+    initialConditions(f, g, p.thetaPoints, p.dTheta, 
+                      p.frequencyPoints, p.dFrequency, 
+                      p.minimumFrequency, p.maximumFrequency); 
+    OrderParameter ordR =  computeR(f, g, p.thetaPoints, p.dTheta, 
+                                    cosine, sine, 
+                                    p.frequencyPoints, p.dFrequency);              
     double multiplyFactor = p.Kmax / (p.Kpoints - 1);       
-    double maxFrequency = std::max(std::abs(p.minimumFrequency), std::abs(p.maximumFrequency));
+    double maxFrequency = std::max(std::abs(p.minimumFrequency), 
+    std::abs(p.maximumFrequency));
     double alpha;
     double R = ordR.R;
     double Rnew;
@@ -74,13 +86,18 @@ int main() {
         for (int t = 0; t < steps; t++) {
 
             // Compute the solution at each time step
-            finiteDifference(f, fnew, g, cosine, sine, jNext, jPrev, freq, p.thetaPoints, p.dTheta, 
-                             p.frequencyPoints, p.dFrequency, p.minimumFrequency,  dt, p.D, K, alpha);
+            finiteDifference(f, fnew, g, cosine, sine, jNext, jPrev, freq, 
+                             p.thetaPoints, p.dTheta, 
+                             p.frequencyPoints, p.dFrequency, 
+                             p.minimumFrequency, dt, p.D, K, alpha);
             std::swap(f, fnew); 
-            OrderParameter ordRnew =  computeR(f, g, p.thetaPoints, p.dTheta, cosine, sine, p.frequencyPoints, p.dFrequency); 
+            OrderParameter ordRnew =  computeR(f, g, p.thetaPoints, p.dTheta, 
+                                               cosine, sine, 
+                                               p.frequencyPoints, p.dFrequency); 
             Rnew = ordRnew.R;
 
-            // Check if the order parameter has reached an asymptotic value, in which case we can stop the simulation and save the result
+            // Check if the order parameter has reached an asymptotic value, 
+            // in which case we can stop the simulation and save the result
             if (std::abs(Rnew - Rold) < 0.0001) { asymptotic ++; }
             else { asymptotic = 0; }
             if (asymptotic == static_cast<int>(steps / 4)) { 
@@ -89,8 +106,11 @@ int main() {
             }  
             else if (t == steps - 1) { 
                 fwrite(&Rnew, sizeof(double), 1, file); 
-                std::cout << "\nWarning: the order parameter did not reach an asymptotic value for K = " << K << " ." << std::endl;
-                std::cout << "Consider increasing the maximum simulation time." << std::endl;
+                std::cout << "\nWarning: the order parameter did not reach an"
+                             " asymptotic value for K = " << K << " ." 
+                             << std::endl;
+                std::cout << "Consider increasing the maximum simulation time." 
+                          << std::endl;
             }
             std::swap(Rold, Rnew); 
         }
@@ -100,16 +120,19 @@ int main() {
         if (progress >= 1) {
             std::string bar(progress, '=');
             bar.append(100 - progress, ' ');
-            std::cout << "\rComputing: [" << bar << "] " << progress << "%" << std::flush;
+            std::cout << "\rComputing: [" << bar << "] " << progress << "%" 
+                      << std::flush;
         }
     }
-    std::cout << "\rComputing: [" << std::string(100, '=') << "] 100%" << std::endl;
+    std::cout << "\rComputing: [" << std::string(100, '=') << "] 100%" 
+        << std::endl;
     std::cout << "Simulation completed successfully." << std::endl;
     fwrite(&p.minimumFrequency, sizeof(double), 1, file);
     fwrite(&p.maximumFrequency, sizeof(double), 1, file);
     fwrite(g.data(), sizeof(double), p.frequencyPoints, file);
     fclose(file);
-    std::cout << "Result saved successfully in " << fullpath.generic_string() << "." << std::endl;
+    std::cout << "Result saved successfully in " << fullpath.generic_string() 
+              << "." << std::endl;  
 
     return 0;
 }
